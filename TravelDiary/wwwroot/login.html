@@ -1,0 +1,69 @@
+﻿
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Logowanie - Travel Diary</title>
+</head>
+<body>
+
+    <h1>🌍 TRAVEL DIARY</h1>
+
+    <!-- Widok dla niezalogowanego użytkownika -->
+    <section id="loginSection">
+
+        <h2>Zaloguj się</h2>
+
+        <form id="loginForm">
+
+            <label for="email">Adres e-mail:</label>
+            <input type="email"
+                   id="email"
+                   name="email"
+                   required>
+
+            <br><br>
+
+            <label for="password">Hasło:</label>
+            <input type="password"
+                   id="password"
+                   name="password"
+                   required>
+
+            <br><br>
+
+            <button type="submit">
+                Zaloguj się
+            </button>
+
+        </form>
+
+        <p id="message"></p>
+
+        <p>
+            Nie masz jeszcze konta?
+            <a href="#">Zarejestruj się</a>
+        </p>
+
+    </section>
+
+    <!-- Widok dla zalogowanego użytkownika -->
+    <section id="userSection" hidden>
+
+        <h2 id="welcomeMessage"></h2>
+
+        <p>Miło Cię znowu widzieć w Travel Diary! ✈️</p>
+
+        <button id="logoutButton" type="button">
+            Wyloguj się
+        </button>
+
+    </section>
+
+    <script src="/login.js"></script>
+
+</body>
+</html>

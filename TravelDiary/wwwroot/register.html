@@ -1,0 +1,79 @@
+﻿
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Rejestracja - Travel Diary</title>
+</head>
+<body>
+
+    <h1>🌍 TRAVEL DIARY</h1>
+
+    <h2>Utwórz konto</h2>
+
+    <p>Dołącz do społeczności podróżników! ✈️</p>
+
+    <form id="registerForm">
+
+        <label for="userName">Nazwa użytkownika:</label>
+        <input type="text"
+               id="userName"
+               name="userName"
+               required>
+
+        <br><br>
+
+        <label for="displayName">Nazwa wyświetlana:</label>
+        <input type="text"
+               id="displayName"
+               name="displayName"
+               required>
+
+        <br><br>
+
+        <label for="email">Adres e-mail:</label>
+        <input type="email"
+               id="email"
+               name="email"
+               required>
+
+        <br><br>
+
+        <label for="password">Hasło:</label>
+        <input type="password"
+               id="password"
+               name="password"
+               autocomplete="new-password"
+               required>
+
+        <br><br>
+
+        <label for="confirmPassword">Powtórz hasło:</label>
+        <input type="password"
+               id="confirmPassword"
+               name="confirmPassword"
+               autocomplete="new-password"
+               required>
+
+        <br><br>
+
+        <button type="submit">
+            Zarejestruj się
+        </button>
+
+    </form>
+
+    <p id="message" role="status"></p>
+
+    <p>
+        Masz już konto?
+        <a href="/login.html">Zaloguj się</a>
+    </p>
+
+    <script src="/register.js"></script>
+
+</body>
+</html>
