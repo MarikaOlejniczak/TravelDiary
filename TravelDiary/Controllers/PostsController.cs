@@ -1,7 +1,6 @@
-﻿
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using TravelDiary.Data;
 using TravelDiary.DTOs;
@@ -19,7 +18,6 @@ namespace TravelDiary.Controllers
         {
             _context = context;
         }
-
 
         // GET: api/Posts
         [HttpGet]
@@ -48,8 +46,6 @@ namespace TravelDiary.Controllers
 
             return Ok(posts);
         }
-
-
 
         // GET: api/Posts/5
         [HttpGet("{id}")]
@@ -85,13 +81,18 @@ namespace TravelDiary.Controllers
             return Ok(post);
         }
 
-
         // POST: api/Posts
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Post>> CreatePost(CreatePostDto dto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
 
             var post = new Post
             {
@@ -115,9 +116,17 @@ namespace TravelDiary.Controllers
         // PUT: api/Posts/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePost(int id, UpdatePostDto dto)
+        public async Task<IActionResult> UpdatePost(
+            int id,
+            UpdatePostDto dto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
 
             var post = await _context.Posts.FindAsync(id);
 
@@ -126,6 +135,7 @@ namespace TravelDiary.Controllers
                 return NotFound();
             }
 
+            // Edytować może tylko autor wpisu.
             if (post.UserId != userId)
             {
                 return Forbid();
@@ -146,7 +156,13 @@ namespace TravelDiary.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
 
             var post = await _context.Posts.FindAsync(id);
 
@@ -155,7 +171,8 @@ namespace TravelDiary.Controllers
                 return NotFound();
             }
 
-            if (post.UserId != userId)
+            // Usuwać może autor wpisu lub administrator.
+            if (post.UserId != userId && !User.IsInRole("Admin"))
             {
                 return Forbid();
             }
@@ -166,7 +183,6 @@ namespace TravelDiary.Controllers
             return NoContent();
         }
 
-
         // POST: api/Posts/5/images
         [Authorize]
         [HttpPost("{id}/images")]
@@ -175,10 +191,14 @@ namespace TravelDiary.Controllers
             int id,
             [FromForm] UploadPostImageDto dto)
         {
-            // Sprawdzamy zalogowanego użytkownika
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
 
-            // Szukamy wpisu
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
             var post = await _context.Posts.FindAsync(id);
 
             if (post == null)
@@ -186,7 +206,7 @@ namespace TravelDiary.Controllers
                 return NotFound();
             }
 
-            // Zdjęcie może dodać tylko autor wpisu
+            // Zdjęcia może dodawać tylko autor wpisu.
             if (post.UserId != userId)
             {
                 return Forbid();
@@ -194,25 +214,28 @@ namespace TravelDiary.Controllers
 
             var file = dto.File;
 
-            // Sprawdzamy, czy plik nie jest pusty
             if (file == null || file.Length == 0)
             {
                 return BadRequest("Nie wybrano zdjęcia.");
             }
 
-            // Maksymalny rozmiar: 5 MB
             const long maxFileSize = 5 * 1024 * 1024;
 
             if (file.Length > maxFileSize)
             {
-                return BadRequest("Zdjęcie może mieć maksymalnie 5 MB.");
+                return BadRequest(
+                    "Zdjęcie może mieć maksymalnie 5 MB.");
             }
 
-            // Dozwolone rozszerzenia
             var extension = Path.GetExtension(file.FileName)
                 .ToLowerInvariant();
 
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            var allowedExtensions = new[]
+            {
+                ".jpg",
+                ".jpeg",
+                ".png"
+            };
 
             if (!allowedExtensions.Contains(extension))
             {
@@ -220,18 +243,32 @@ namespace TravelDiary.Controllers
                     "Dozwolone formaty zdjęć: JPG, JPEG, PNG.");
             }
 
-            // Sprawdzamy nagłówek pliku, nie tylko nazwę
+            // Odczytujemy pierwsze 8 bajtów pliku.
             byte[] header = new byte[8];
+            int totalBytesRead = 0;
 
             using (var stream = file.OpenReadStream())
             {
-                var bytesRead = await stream.ReadAsync(
-                    header.AsMemory(0, header.Length));
-
-                if (bytesRead < 8)
+                while (totalBytesRead < header.Length)
                 {
-                    return BadRequest("Nieprawidłowy plik zdjęcia.");
+                    var bytesRead = await stream.ReadAsync(
+                        header.AsMemory(
+                            totalBytesRead,
+                            header.Length - totalBytesRead));
+
+                    if (bytesRead == 0)
+                    {
+                        break;
+                    }
+
+                    totalBytesRead += bytesRead;
                 }
+            }
+
+            if (totalBytesRead < header.Length)
+            {
+                return BadRequest(
+                    "Nieprawidłowy plik zdjęcia.");
             }
 
             bool isJpeg =
@@ -250,15 +287,16 @@ namespace TravelDiary.Controllers
                 header[7] == 0x0A;
 
             bool validFormat =
-                (isJpeg && (extension == ".jpg" || extension == ".jpeg")) ||
+                (isJpeg &&
+                    (extension == ".jpg" || extension == ".jpeg")) ||
                 (isPng && extension == ".png");
 
             if (!validFormat)
             {
-                return BadRequest("Zawartość pliku nie odpowiada formatowi zdjęcia.");
+                return BadRequest(
+                    "Zawartość pliku nie odpowiada formatowi zdjęcia.");
             }
 
-            // Tworzymy folder na zdjęcia, jeśli nie istnieje
             var folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),
                 "wwwroot",
@@ -267,12 +305,13 @@ namespace TravelDiary.Controllers
 
             Directory.CreateDirectory(folderPath);
 
-            // Generujemy bezpieczną, unikalną nazwę pliku
-            var fileName = Guid.NewGuid().ToString("N") + extension;
+            var fileName =
+                Guid.NewGuid().ToString("N") + extension;
 
-            var filePath = Path.Combine(folderPath, fileName);
+            var filePath = Path.Combine(
+                folderPath,
+                fileName);
 
-            // Zapisujemy zdjęcie na dysku
             using (var stream = new FileStream(
                 filePath,
                 FileMode.CreateNew))
@@ -280,7 +319,6 @@ namespace TravelDiary.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            // Zapisujemy adres zdjęcia w bazie danych
             var image = new PostImage
             {
                 ImageUrl = "/uploads/posts/" + fileName,
@@ -294,7 +332,7 @@ namespace TravelDiary.Controllers
             }
             catch
             {
-                // Usuwamy plik, jeśli zapis w bazie się nie udał
+                // Sprzątamy plik, jeśli zapis w bazie się nie udał.
                 if (System.IO.File.Exists(filePath))
                 {
                     System.IO.File.Delete(filePath);
@@ -310,6 +348,5 @@ namespace TravelDiary.Controllers
                 image.PostId
             });
         }
-
     }
 }

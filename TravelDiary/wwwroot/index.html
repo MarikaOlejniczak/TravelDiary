@@ -1,0 +1,1274 @@
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Travel Diary — dziennik podróży</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap');
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: #f7f8f4;
+            color: #213b33;
+            font-family: 'DM Sans',sans-serif
+        }
+
+        button, input, textarea {
+            font: inherit
+        }
+
+        button, a {
+            cursor: pointer
+        }
+
+        button {
+            border: 0;
+            border-radius: 8px;
+            padding: 12px 19px;
+            background: #234c3c;
+            color: white;
+            font-weight: 600
+        }
+
+            button:hover {
+                filter: brightness(1.1)
+            }
+
+        .outline {
+            background: transparent;
+            border: 1px solid #d4dcd3;
+            color: #234c3c
+        }
+
+        .muted {
+            color: #78857c
+        }
+
+        header {
+            height: 86px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1240px;
+            margin: auto;
+            padding: 0 30px
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -1px
+        }
+
+            .brand span {
+                display: inline-grid;
+                place-items: center;
+                background: #234c3c;
+                color: #fff;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                margin-right: 10px
+            }
+
+        nav {
+            display: flex;
+            gap: 24px;
+            align-items: center
+        }
+
+            nav a {
+                font-size: 14px
+            }
+
+        main {
+            max-width: 1240px;
+            margin: auto;
+            padding: 0 30px
+        }
+
+        .hero {
+            min-height: 380px;
+            position: relative;
+            border-radius: 18px;
+            overflow: hidden;
+            background: linear-gradient(90deg,rgba(12,37,29,.88),rgba(12,37,29,.12)),url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1800&q=85') center 50%/cover;
+            color: white;
+            padding: 56px;
+            display: flex;
+            align-items: center
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 11px;
+            font-weight: 700
+        }
+
+        .hero h1 {
+            font: 500 54px/1.12 'Playfair Display',Georgia,serif;
+            margin: 17px 0;
+            max-width: 580px
+        }
+
+        .hero p {
+            color: #dae4db;
+            line-height: 1.8;
+            max-width: 420px;
+            font-size: 14px
+        }
+
+        .hero button {
+            background: #e8b76e;
+            color: #293b2d;
+            margin-top: 12px
+        }
+
+        .hero small {
+            position: absolute;
+            bottom: 24px;
+            right: 28px;
+            font-size: 11px;
+            letter-spacing: 1px
+        }
+
+        .notice {
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            background: #eaf0e7;
+            border: 1px solid #dce5d7;
+            border-radius: 8px;
+            padding: 13px 18px;
+            margin: 22px 0 38px
+        }
+
+            .notice b {
+                font-weight: 600
+            }
+
+        .heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 16px
+        }
+
+        h2 {
+            font: 500 32px 'Playfair Display',Georgia,serif;
+            margin: 0 0 8px
+        }
+
+        .heading p {
+            margin: 0;
+            font-size: 13px
+        }
+
+        .tools {
+            display: flex;
+            gap: 10px;
+            margin: 24px 0
+        }
+
+            .tools input {
+                margin-left: auto;
+                width: 255px
+            }
+
+            .tools button {
+                padding: 9px 16px;
+                font-size: 12px
+            }
+
+        input, textarea {
+            border: 1px solid #dce2d8;
+            background: #fff;
+            border-radius: 7px;
+            padding: 11px 13px;
+            color: #213b33;
+            max-width: 100%
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 25px
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e3e7dd;
+            border-radius: 13px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform .2s
+        }
+
+            .card:hover {
+                transform: translateY(-4px)
+            }
+
+        .photo {
+            height: 224px;
+            position: relative;
+            background: #dce5d7
+        }
+
+            .photo img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover
+            }
+
+        .tag {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #ffffffed;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 11px
+        }
+
+        .body {
+            padding: 22px
+        }
+
+        .date {
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: #8a958d
+        }
+
+        .body h3 {
+            font: 500 25px 'Playfair Display',Georgia,serif;
+            margin: 12px 0
+        }
+
+        .body p {
+            color: #7b867e;
+            font-size: 13px;
+            line-height: 1.8;
+            margin: 0 0 22px
+        }
+
+        .by {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 11px;
+            border-top: 1px solid #edf0e8;
+            padding-top: 16px
+        }
+
+        .avatar {
+            background: #e9eee5;
+            border-radius: 50%;
+            width: 29px;
+            height: 29px;
+            display: grid;
+            place-items: center
+        }
+
+        .by span:last-child {
+            margin-left: auto;
+            color: #7b867e
+        }
+
+        .empty {
+            grid-column: 1/-1;
+            padding: 55px;
+            text-align: center;
+            border: 1px dashed #b8c9b7
+        }
+
+        .bottom {
+            border-top: 1px solid #dfe5d9;
+            margin-top: 50px;
+            padding: 24px 0 35px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #879184
+        }
+
+        dialog {
+            border: 0;
+            border-radius: 15px;
+            max-width: 560px;
+            width: calc(100% - 32px);
+            padding: 30px;
+            color: #213b33;
+            max-height: 90vh
+        }
+
+            dialog::backdrop {
+                background: #142c26a8;
+                backdrop-filter: blur(4px)
+            }
+
+            dialog h2 {
+                font-size: 30px;
+                margin-bottom: 20px
+            }
+
+        .close {
+            float: right;
+            background: transparent;
+            color: #213b33;
+            padding: 2px 8px;
+            font-size: 24px
+        }
+
+        form {
+            display: grid;
+            gap: 13px
+        }
+
+        label {
+            display: grid;
+            gap: 6px;
+            font-size: 12px
+        }
+
+        textarea {
+            min-height: 115px;
+            resize: vertical
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .info {
+            font-size: 12px;
+            color: #7b867e;
+            line-height: 1.7
+        }
+
+        .detailimg {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 9px;
+            margin-bottom: 16px
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px
+        }
+
+        .error {
+            color: #a03838;
+            font-size: 13px
+        }
+
+        footer a {
+            color: inherit
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #213b33;
+            color: white;
+            border-radius: 8px;
+            padding: 14px 25px;
+            z-index: 10;
+            font-size: 13px
+        }
+
+        @media(max-width:800px) {
+            .grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .hero {
+                padding: 32px
+            }
+
+                .hero h1 {
+                    font-size: 42px
+                }
+
+            nav a {
+                display: none
+            }
+        }
+
+        @media(max-width:550px) {
+            header {
+                padding: 0 18px;
+                height: 75px
+            }
+
+            main {
+                padding: 0 18px
+            }
+
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            .hero {
+                min-height: 370px;
+                padding: 28px
+            }
+
+                .hero h1 {
+                    font-size: 38px
+                }
+
+                .hero small {
+                    display: none
+                }
+
+            .notice {
+                display: block;
+                line-height: 1.8
+            }
+
+                .notice span {
+                    display: block
+                }
+
+            .heading {
+                align-items: start
+            }
+
+            h2 {
+                font-size: 27px
+            }
+
+            .heading button {
+                font-size: 12px;
+                padding: 11px
+            }
+
+            .tools {
+                flex-wrap: wrap
+            }
+
+                .tools input {
+                    width: 100%;
+                    order: 3
+                }
+
+            .bottom {
+                gap: 15px
+            }
+
+            .brand {
+                font-size: 19px
+            }
+
+            nav {
+                gap: 9px
+            }
+
+                nav button {
+                    padding: 10px 12px;
+                    font-size: 12px
+                }
+        }
+
+        body {
+            background: #f5f6f0
+        }
+
+        header {
+            max-width: none;
+            height: 76px;
+            border-bottom: 1px solid #e0e5da;
+            padding: 0 30px;
+            background: #fff
+        }
+
+        .workspace {
+            max-width: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 350px minmax(0,1fr);
+            height: calc(100vh - 76px);
+            gap: 0
+        }
+
+        aside {
+            background: #fff;
+            border-right: 1px solid #dfe5d8;
+            overflow: auto;
+            padding: 28px 23px
+        }
+
+        .sidehead h2 {
+            font-size: 27px;
+            margin: 13px 0
+        }
+
+        .sidehead p {
+            font-size: 12px;
+            line-height: 1.6
+        }
+
+        .sidehead button {
+            width: 100%;
+            margin: 14px 0 0
+        }
+
+        .tools {
+            flex-wrap: wrap;
+            margin: 21px 0
+        }
+
+            .tools input {
+                width: 100%;
+                margin: 0;
+                order: 3
+            }
+
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .photo {
+            height: 140px
+        }
+
+        .body {
+            padding: 16px
+        }
+
+            .body h3 {
+                font-size: 21px
+            }
+
+            .body p {
+                font-size: 12px;
+                margin-bottom: 14px
+            }
+
+        .date {
+            font-size: 9px
+        }
+
+        .by {
+            font-size: 10px
+        }
+
+        .maparea {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            padding: 25px 28px 18px;
+            gap: 20px
+        }
+
+        .maptop {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px
+        }
+
+            .maptop h1 {
+                font: 500 30px 'Playfair Display',Georgia,serif;
+                margin: 8px 0 0
+            }
+
+        .previewbadge {
+            font-size: 11px;
+            border: 1px solid #d2dbca;
+            border-radius: 20px;
+            padding: 8px 12px;
+            white-space: nowrap
+        }
+
+        #map {
+            position: relative;
+            flex: 1;
+            min-height: 430px;
+            border: 1px solid #d2dacb;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #e6ebde
+        }
+
+            #map svg {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                inset: 0
+            }
+
+        .mapplaceholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            width: 470px;
+            max-width: 90%;
+            text-align: center;
+            border: 1px solid #ffffffd9;
+            background: #ffffffed;
+            padding: 29px 25px;
+            border-radius: 17px;
+            box-shadow: 0 15px 70px #2c49251a
+        }
+
+        .mapicon {
+            display: grid;
+            place-items: center;
+            margin: 0 auto 17px;
+            background: #edf2e6;
+            color: #28513d;
+            width: 53px;
+            height: 53px;
+            border-radius: 50%;
+            font-size: 32px
+        }
+
+        .mapplaceholder .eyebrow {
+            font-size: 9px
+        }
+
+        .mapplaceholder h2 {
+            font-size: 31px;
+            margin: 12px 0
+        }
+
+        .mapplaceholder p {
+            font-size: 13px;
+            color: #71816e;
+            line-height: 1.9
+        }
+
+        .mapplaceholder small {
+            display: block;
+            font-size: 10px;
+            color: #899484;
+            line-height: 1.7;
+            margin-top: 20px
+        }
+
+        .pills {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px
+        }
+
+            .pills span {
+                font-size: 10px;
+                background: #edf2e7;
+                padding: 7px 10px;
+                border-radius: 5px
+            }
+
+        .maplegend {
+            position: absolute;
+            bottom: 18px;
+            left: 18px;
+            right: 18px;
+            background: #ffffffe3;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            gap: 7px
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            background: #356c50;
+            border-radius: 50%
+        }
+
+        .mapbottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            font-size: 12px
+        }
+
+            .mapbottom p {
+                font-size: 11px;
+                color: #84907d;
+                margin: 6px 0
+            }
+
+            .mapbottom > span {
+                font-size: 9px;
+                letter-spacing: 2px;
+                color: #84907d;
+                white-space: nowrap
+            }
+
+        @media(min-width:1450px) {
+            .workspace {
+                grid-template-columns: 390px minmax(0,1fr)
+            }
+        }
+
+        @media(max-width:850px) {
+            .workspace {
+                height: auto;
+                display: flex;
+                flex-direction: column
+            }
+
+            .maparea {
+                order: -1;
+                padding: 20px 18px
+            }
+
+            #map {
+                height: 550px;
+                flex: none
+            }
+
+            .maptop h1 {
+                font-size: 24px
+            }
+
+            aside {
+                overflow: visible;
+                border-right: 0;
+                padding: 25px 18px
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr
+            }
+
+            .sidehead button {
+                width: auto
+            }
+
+            .mapbottom > span {
+                display: none
+            }
+        }
+
+        @media(max-width:550px) {
+            header {
+                padding: 0 18px
+            }
+
+            .maptop {
+                display: block
+            }
+
+            .previewbadge {
+                display: inline-block;
+                margin-top: 12px
+            }
+
+            #map {
+                height: 480px;
+                min-height: 0
+            }
+
+            .mapplaceholder {
+                padding: 22px 17px
+            }
+
+                .mapplaceholder h2 {
+                    font-size: 25px
+                }
+
+                .mapplaceholder p {
+                    font-size: 12px
+                }
+
+            .pills {
+                gap: 5px
+            }
+
+                .pills span {
+                    font-size: 9px;
+                    padding: 6px
+                }
+
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            .maplegend {
+                font-size: 9px
+            }
+
+            .maptop h1 {
+                font-size: 26px
+            }
+        }
+
+        [hidden] {
+            display: none !important
+        }
+
+        .headerAccount {
+            display: flex;
+            align-items: center;
+            gap: 10px
+        }
+
+            .headerAccount small {
+                font-size: 11px;
+                max-width: 140px;
+                overflow: hidden;
+                text-overflow: ellipsis
+            }
+
+            .headerAccount button {
+                font-size: 12px;
+                padding: 10px 13px
+            }
+
+        .entry {
+            display: block;
+            padding: 0;
+            text-align: left;
+            background: white;
+            color: #213b33;
+            font-weight: 400;
+            border: 1px solid #dfe5d8;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%
+        }
+
+            .entry:hover {
+                border-color: #8da68a;
+                filter: none;
+                box-shadow: 0 4px 20px #234c3c0d
+            }
+
+        .cover {
+            width: 100%;
+            height: 145px;
+            object-fit: cover
+        }
+
+        .noPhoto {
+            height: 90px;
+            background: linear-gradient(120deg,#e3ecd9,#f3f5ec);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 23px
+        }
+
+            .noPhoto span {
+                font-size: 11px
+            }
+
+        .entrybody {
+            padding: 17px
+        }
+
+            .entrybody h3 {
+                font: 500 22px Georgia,serif;
+                margin: 10px 0
+            }
+
+            .entrybody p {
+                font-size: 12px;
+                line-height: 1.7;
+                color: #78857c;
+                white-space: pre-wrap;
+                overflow-wrap: anywhere;
+                margin: 0 0 15px
+            }
+
+        .entrymeta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            border-top: 1px solid #edf0e8;
+            padding-top: 12px
+        }
+
+        .entrybody small {
+            display: block;
+            font-size: 10px;
+            color: #899284;
+            margin-top: 10px
+        }
+
+        .listToolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #78857c;
+            margin-bottom: 16px
+        }
+
+            .listToolbar button {
+                padding: 7px 10px;
+                font-size: 11px
+            }
+
+        .tools input {
+            flex: 1;
+            min-width: 0
+        }
+
+        .status {
+            font-size: 12px;
+            line-height: 1.7;
+            color: #9b4933;
+            overflow-wrap: anywhere
+        }
+
+        .empty {
+            padding: 28px 18px;
+            border-radius: 9px;
+            background: #f6f8f1
+        }
+
+            .empty b {
+                font-size: 14px
+            }
+
+            .empty p {
+                font-size: 12px;
+                line-height: 1.8;
+                color: #7b867e
+            }
+
+        .textButton {
+            background: transparent;
+            color: #28513d;
+            padding: 14px 0;
+            font-size: 12px
+        }
+
+        .postContent {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            line-height: 1.9
+        }
+
+        .danger {
+            background: #9b493b;
+            color: white
+        }
+
+        .actions {
+            flex-wrap: wrap
+        }
+
+        .gallery {
+            display: grid;
+            gap: 9px
+        }
+
+        .detailimg {
+            margin: 0;
+            max-height: 350px
+        }
+
+        .error {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere
+        }
+
+        button:disabled {
+            opacity: .55;
+            cursor: wait
+        }
+
+        button:focus-visible, a:focus-visible {
+            outline: 3px solid #b29054;
+            outline-offset: 3px
+        }
+
+        label {
+            line-height: 1.6
+        }
+
+        input, textarea {
+            width: 100%
+        }
+
+        dialog {
+            width: calc(100% - 32px);
+            max-width: 600px
+        }
+
+        #search {
+            width: 100%
+        }
+
+        .mapbottom p {
+            line-height: 1.7
+        }
+
+        .info a {
+            color: inherit
+        }
+
+        @media(max-width:600px) {
+            header {
+                height: auto;
+                min-height: 76px;
+                padding: 14px;
+                flex-wrap: wrap;
+                gap: 14px
+            }
+
+            .headerAccount {
+                flex-wrap: wrap
+            }
+
+                .headerAccount small {
+                    max-width: 100px
+                }
+
+            .workspace {
+                height: auto
+            }
+
+            .mapplaceholder {
+                max-width: 92%
+            }
+
+            .row {
+                grid-template-columns: 1fr
+            }
+
+            #map {
+                height: 430px
+            }
+
+            .maparea {
+                gap: 14px
+            }
+
+            .sidehead h2 {
+                font-size: 27px
+            }
+
+            .entry .cover {
+                height: 180px
+            }
+        }
+    </style>
+</head>
+<body>
+    <header><div class="brand"><span>↗</span>travel diary.</div><div class="headerAccount"><small id="accountName">Sprawdzanie sesji…</small><button id="loginButton" class="outline" type="button">Zaloguj się</button><button id="registerButton" type="button">Załóż konto</button><button id="logoutButton" class="outline" type="button" hidden="">Wyloguj się</button></div></header><main class="workspace"><aside><div class="sidehead"><span class="eyebrow">TWÓJ DZIENNIK PODRÓŻY</span><h2>Miejsca i wspomnienia</h2><p class="muted">Prawdziwe wpisy, zdjęcia i historie z drogi.</p><button type="button" id="add">＋ Dodaj wpis</button></div><div class="tools"><input id="search" placeholder="Szukaj wpisu lub autora…" aria-label="Szukaj wpisów"></div><div class="listToolbar"><span id="entryCount">Wpisy z bazy danych</span><button id="refreshButton" class="outline" type="button">Odśwież</button></div><p id="listStatus" class="status" role="status" aria-live="polite">Przenieś index.html do wwwroot i otwórz go przez HTTPS uruchomionej aplikacji w Visual Studio.</p><button id="retryButton" class="outline" type="button" hidden="">Spróbuj ponownie</button><div class="grid" id="cards"></div></aside><section class="maparea" aria-label="Miejsce na Google Maps"><div class="maptop"><div><span class="eyebrow">ŚWIAT TWOICH PODRÓŻY</span><h1>Twoje podróże w jednym miejscu.</h1></div><span class="previewbadge">◌ Mapa w przygotowaniu</span></div><div id="map"><svg viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M 60 0 L 0 0 0 60" fill="none" stroke="#cbd5c6" stroke-width=".6"></path></pattern></defs><rect width="1000" height="800" fill="#e6ebde"></rect><path d="M-40 110Q180 260 300 120T670 80L1060 210V-10H-40Z M800 350Q700 530 860 840H1100V300Z" fill="#d1dfc5"></path><path d="M-40 620Q130 500 230 610T520 650T740 540T1080 590" stroke="#c0dce0" stroke-width="70" fill="none"></path><g fill="none" stroke="#fafbf6" stroke-width="15"><path d="M-30 160L290 410L580 340L1060 70"></path><path d="M140 -40L290 410L440 850"></path><path d="M-50 760L290 410L770 600L1000 790"></path><path d="M560 -40L580 340L770 600L890 850"></path></g><g fill="none" stroke="#d7c9a9" stroke-width="3"><path d="M-30 160L290 410L580 340L1060 70"></path><path d="M140 -40L290 410L440 850"></path><path d="M-50 760L290 410L770 600L1000 790"></path></g><rect width="1000" height="800" fill="url(#grid)" opacity=".35"></rect><path d="M240 480Q280 380 410 400T620 260" stroke="#356c50" stroke-width="5" stroke-dasharray="9 8" fill="none"></path><g stroke="white" stroke-width="6" fill="#28513d"><circle cx="240" cy="480" r="16"></circle><circle cx="410" cy="400" r="16"></circle><circle cx="620" cy="260" r="16"></circle></g></svg><div class="mapplaceholder"><span class="mapicon">⌖</span><span class="eyebrow">TU ZACZYNA SIĘ PODRÓŻ</span><h2>Miejsce na Google Maps</h2><p>Duża, centralna mapa Twoich wyjazdów.<br>Docelowo: start, trasa i przystanki ze zdjęciami.</p><div class="pills"><span>⌂ Miejsce startu</span><span>↝ Trasa</span><span>⌖ Przystanki</span></div><small>Ilustracja układu — Google Maps API nie jest jeszcze podłączone.</small></div><div class="maplegend"><span class="dot"></span> Schemat poglądowy — bez rzeczywistych tras</div></div><div class="mapbottom"><div><b>Twoje wspomnienia, w jednym miejscu</b><p>Wpisy i zdjęcia są pobierane z Twojej aplikacji. Trasy wymagają rozbudowy backendu.</p></div><span>MAPA · GŁÓWNY WIDOK</span></div></section></main><dialog id="modal" aria-label="Okno Travel Diary"></dialog><div id="toast" role="status" aria-live="polite" hidden=""></div>
+    <script>
+        'use strict';
+        // Ten plik używa wyłącznie API aplikacji na tym samym adresie (bez danych demo).
+        const $ = s => document.querySelector(s);
+        const state = { user: null, posts: [], query: '' };
+        let toastTimer;
+        class ApiError extends Error { constructor(message, status) { super(message); this.status = status; } }
+        function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+        function errorMessage(data, status) {
+            if (Array.isArray(data)) return data.map(x => x.description || x.code).filter(Boolean).join(' ');
+            if (data && typeof data === 'object') {
+                if (data.errors) return Object.values(data.errors).flat().join(' ');
+                if (data.message) return data.message;
+                if (data.title) return data.title;
+            }
+            if (typeof data === 'string' && data && !data.trim().startsWith('<')) return data.slice(0, 500);
+            return ({ 400: 'Nieprawidłowe dane lub token CSRF. Spróbuj ponownie.', 401: 'Zaloguj się ponownie. Sesja mogła wygasnąć.', 403: 'Możesz zmieniać i usuwać wyłącznie własne wpisy.', 404: 'Nie znaleziono wpisu lub endpointu API.', 413: 'Żądanie jest za duże.' })[status] || 'Błąd serwera (' + status + '). Spróbuj ponownie.';
+        }
+        async function api(path, options = {}) {
+            let response;
+            try { response = await fetch(path, { ...options, credentials: 'same-origin', cache: 'no-store' }); }
+            catch { throw new ApiError('Nie można połączyć się z aplikacją. Sprawdź, czy projekt w Visual Studio jest uruchomiony.', 0); }
+            const raw = await response.text();
+            let data = raw;
+            if (raw) { try { data = JSON.parse(raw); } catch { } } else data = null;
+            if (!response.ok) throw new ApiError(errorMessage(data, response.status), response.status);
+            return data;
+        }
+        async function mutate(path, method, data) {
+            // Pobieranie na nowo uwzględnia zmianę użytkownika po zalogowaniu.
+            const csrf = await api('/api/Csrf/token');
+            if (!csrf || typeof csrf.token !== 'string' || !csrf.token) throw new Error('Serwer nie zwrócił tokenu CSRF.');
+            const headers = { 'X-CSRF-TOKEN': csrf.token };
+            const options = { method, headers };
+            if (data instanceof FormData) options.body = data; // Przeglądarka ustawia multipart boundary.
+            else if (data !== undefined) { headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(data); }
+            return api(path, options);
+        }
+        function safeImage(value) {
+            try {
+                const url = new URL(value, location.origin);
+                return url.origin === location.origin && url.pathname.startsWith('/uploads/') ? url.href : '';
+            } catch { return ''; }
+        }
+        function dateLabel(value) { const d = new Date(value); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' }); }
+        function coordinates(p) { return Number(p.latitude).toFixed(4) + ', ' + Number(p.longitude).toFixed(4); }
+        function toast(text) { clearTimeout(toastTimer); $('#toast').textContent = text; $('#toast').hidden = false; toastTimer = setTimeout(() => $('#toast').hidden = true, 6500); }
+        function openDialog(html) {
+            const m = $('#modal');
+            m.innerHTML = '<button type="button" class="close" aria-label="Zamknij okno">×</button>' + html;
+            m.querySelector('.close').onclick = () => m.close();
+            if (!m.open) m.showModal();
+        }
+        function setBusy(form, busy) { for (const el of form.elements) el.disabled = busy; const close = $('#modal .close'); if (close) close.disabled = busy; $('#modal').dataset.busy = busy ? '1' : '0'; }
+        function renderAccount() {
+            $('#accountName').textContent = state.user ? state.user.displayName || state.user.userName : 'Nie jesteś zalogowany';
+            $('#loginButton').hidden = !!state.user; $('#registerButton').hidden = !!state.user; $('#logoutButton').hidden = !state.user;
+        }
+        async function checkSession() {
+            try { state.user = await api('/api/Auth/me'); renderAccount(); return true; }
+            catch (e) { state.user = null; renderAccount(); if (e.status !== 401) throw e; return false; }
+        }
+        function renderPosts() {
+            const q = state.query.toLocaleLowerCase('pl');
+            const shown = state.posts.filter(p => [p.title, p.content, p.authorName].join(' ').toLocaleLowerCase('pl').includes(q));
+            $('#entryCount').textContent = state.posts.length + ' wpisów w dzienniku';
+            const cards = $('#cards'); cards.replaceChildren();
+            if (!shown.length) { cards.innerHTML = '<div class="empty"><b>' + (q ? 'Brak wyników' : 'Twój dziennik czeka na pierwszą historię') + '</b><p>' + (q ? 'Zmień wyszukiwane słowo.' : 'Zaloguj się i dodaj wpis z opisem, miejscem i zdjęciami.') + '</p></div>'; return; }
+            for (const p of shown) {
+                const card = document.createElement('button'); card.type = 'button'; card.className = 'entry';
+                const images = Array.isArray(p.images) ? p.images : [];
+                const cover = images.map(safeImage).find(Boolean);
+                card.innerHTML = (cover ? '<img class="cover" src="' + escapeHtml(cover) + '" alt="" loading="lazy">' : '<div class="noPhoto">⌖ <span>Wspomnienie z podróży</span></div>') + '<div class="entrybody"><span class="date">' + escapeHtml(dateLabel(p.createdAt)) + '</span><h3>' + escapeHtml(p.title) + '</h3><p>' + escapeHtml(String(p.content || '').slice(0, 130)) + (String(p.content || '').length > 130 ? '…' : '') + '</p><div class="entrymeta"><span>' + escapeHtml(p.authorName || 'Nieznany użytkownik') + '</span><span>↗</span></div><small>⌖ ' + escapeHtml(coordinates(p)) + '</small></div>';
+                card.onclick = () => showPost(p.id); cards.append(card);
+            }
+        }
+        async function loadPosts() {
+            $('#listStatus').textContent = 'Pobieranie wpisów…'; $('#retryButton').hidden = true;
+            try {
+                const result = await api('/api/Posts');
+                if (!Array.isArray(result)) throw new Error('API nie zwróciło listy wpisów. Otwórz stronę przez adres HTTPS aplikacji, a nie bezpośrednio z dysku.');
+                state.posts = result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); renderPosts(); $('#listStatus').textContent = '';
+            } catch (e) { $('#listStatus').textContent = e.message; $('#retryButton').hidden = false; }
+        }
+        function authDialog(register = false) {
+            openDialog('<h2>' + (register ? 'Utwórz konto' : 'Witaj ponownie') + '</h2><p class="info">' + (register ? 'Zapisuj swoje miejsca i wspomnienia z podróży.' : 'Zaloguj się na swoje konto Travel Diary.') + '</p><form id="authForm">' + (register ? '<label>Nazwa użytkownika<input name="userName" required maxlength="50" autocomplete="username"></label><label>Nazwa wyświetlana<input name="displayName" required maxlength="100"></label>' : '') + '<label>Adres e-mail<input name="email" type="email" required autocomplete="' + (register ? 'email' : 'username') + '"></label><label>Hasło<input name="password" type="password" required ' + (register ? 'minlength="6"' : '') + ' autocomplete="' + (register ? 'new-password' : 'current-password') + '"></label>' + (register ? '<p class="info">Domyślne reguły Identity wymagają co najmniej 6 znaków, małej i wielkiej litery, cyfry oraz znaku specjalnego.</p><label>Powtórz hasło<input name="confirmPassword" type="password" required autocomplete="new-password"></label>' : '') + '<p id="authError" class="error" role="alert"></p><button type="submit">' + (register ? 'Zarejestruj się' : 'Zaloguj się') + '</button></form><button class="textButton" id="switchAuth">' + (register ? 'Mam już konto — zaloguj się' : 'Nie masz konta? Zarejestruj się') + '</button>');
+            $('#switchAuth').onclick = () => authDialog(!register);
+            $('#authForm').onsubmit = async e => {
+                e.preventDefault(); const form = e.currentTarget, fields = new FormData(form);
+                const email = fields.get('email').trim(), password = fields.get('password');
+                $('#authError').textContent = '';
+                if (register && password !== fields.get('confirmPassword')) { $('#authError').textContent = 'Hasła muszą być identyczne.'; return; }
+                const payload = { email, password };
+                if (register) { payload.userName = fields.get('userName').trim(); payload.displayName = fields.get('displayName').trim(); if (!payload.userName || !payload.displayName) { $('#authError').textContent = 'Uzupełnij nazwy użytkownika.'; return; } }
+                setBusy(form, true); $('#switchAuth').disabled = true;
+                try {
+                    await mutate('/api/Auth/' + (register ? 'register' : 'login'), 'POST', payload);
+                    // JWT zwracany przez login nie jest zapisywany. Sesję obsługuje ciasteczko HttpOnly.
+                    if (register) { setBusy(form, false); authDialog(false); toast('Konto utworzone. Możesz się zalogować.'); }
+                    else {
+                        const loggedIn = await checkSession();
+                        if (!loggedIn) throw new Error('Logowanie przyjęte, ale nie udało się odczytać sesji. Uruchom aplikację przez HTTPS i sprawdź obsługę ciasteczek.');
+                        setBusy(form, false); $('#modal').close(); renderPosts(); toast('Zalogowano pomyślnie.');
+                    }
+                } catch (err) { $('#authError').textContent = err.message; }
+                finally { if (form.isConnected) { setBusy(form, false); const sw = $('#switchAuth'); if (sw) sw.disabled = false; } }
+            };
+        }
+        async function logout() {
+            $('#logoutButton').disabled = true;
+            try { await mutate('/api/Auth/logout', 'POST'); state.user = null; renderAccount(); renderPosts(); toast('Wylogowano.'); }
+            catch (e) { toast(e.message); }
+            finally { $('#logoutButton').disabled = false; }
+        }
+        async function showPost(id) {
+            try {
+                const p = await api('/api/Posts/' + encodeURIComponent(id));
+                if (!p || typeof p !== 'object') throw new Error('API nie zwróciło danych wpisu.');
+                const photos = (Array.isArray(p.images) ? p.images : []).map(safeImage).filter(Boolean);
+                openDialog('<span class="eyebrow">WPIS Z PODRÓŻY</span><h2>' + escapeHtml(p.title) + '</h2><p class="info">' + escapeHtml(p.authorName) + ' · ' + escapeHtml(dateLabel(p.createdAt)) + '</p><div class="gallery">' + photos.map(src => '<img class="detailimg" src="' + escapeHtml(src) + '" alt="Zdjęcie do wpisu" loading="lazy">').join('') + '</div><p class="postContent">' + escapeHtml(p.content) + '</p><p class="info">⌖ ' + escapeHtml(coordinates(p)) + '</p>' + (state.user ? '<p class="info">Zmiany są dostępne tylko dla autora. Uprawnienia sprawdza serwer.</p><div class="actions"><button id="editPost">Edytuj</button><button class="outline" id="photosPost">Dodaj zdjęcia</button><button class="danger" id="deletePost">Usuń</button></div>' : '<p class="info">Zaloguj się, aby zarządzać własnymi wpisami.</p>'));
+                if (state.user) { $('#editPost').onclick = () => editor(p); $('#photosPost').onclick = () => photoDialog(p.id); $('#deletePost').onclick = () => deleteDialog(p); }
+            } catch (err) { toast(err.message); if (err.status === 404) await loadPosts(); }
+        }
+        function validatePhotos(files) {
+            for (const f of files) { if (!/\.(jpe?g|png)$/i.test(f.name) || (f.type && !['image/jpeg', 'image/png'].includes(f.type))) throw new Error('Dozwolone zdjęcia: JPG, JPEG i PNG.'); if (!f.size || f.size > 5 * 1024 * 1024) throw new Error('Każde zdjęcie musi mieć od 1 bajta do 5 MB.'); }
+        }
+        async function uploadPhotos(id, files) {
+            let uploaded = 0;
+            for (const file of files) {
+                const body = new FormData(); body.append('File', file);
+                try { await mutate('/api/Posts/' + encodeURIComponent(id) + '/images', 'POST', body); uploaded++; }
+                catch (e) { throw new Error('Zapisano ' + uploaded + ' z ' + files.length + ' zdjęć. ' + e.message); }
+            }
+        }
+        function editor(post = null) {
+            if (!state.user) { authDialog(); return; }
+            const isEdit = !!post;
+            openDialog('<h2>' + (isEdit ? 'Edytuj wspomnienie' : 'Nowe wspomnienie') + '</h2><form id="postForm"><label>Tytuł<input name="title" required maxlength="150" value="' + escapeHtml(post?.title || '') + '" placeholder="Jak zapamiętasz to miejsce?"></label><label>Opis<textarea name="content" required>' + escapeHtml(post?.content || '') + '</textarea></label><div class="row"><label>Szerokość geograficzna<input name="latitude" type="number" step="any" min="-90" max="90" required value="' + escapeHtml(post?.latitude ?? '') + '" placeholder="np. 52.4064"></label><label>Długość geograficzna<input name="longitude" type="number" step="any" min="-180" max="180" required value="' + escapeHtml(post?.longitude ?? '') + '" placeholder="np. 16.9252"></label></div><p class="info">Na razie wpisz współrzędne ręcznie. Wybieranie miejsca na mapie dołączymy po podłączeniu Google Maps.</p><label>Zdjęcia · JPG/PNG, do 5 MB każde<input name="photos" type="file" accept="image/jpeg,image/png" multiple></label><p class="error" id="postError" role="alert"></p><button type="submit">' + (isEdit ? 'Zapisz zmiany' : 'Dodaj wpis') + '</button></form>');
+            $('#postForm').onsubmit = async e => {
+                e.preventDefault(); const form = e.currentTarget, data = new FormData(form);
+                const files = Array.from(form.elements.photos.files);
+                const dto = { title: data.get('title').trim(), content: data.get('content').trim(), latitude: Number(data.get('latitude')), longitude: Number(data.get('longitude')) };
+                $('#postError').textContent = '';
+                try { if (!dto.title || !dto.content) throw new Error('Uzupełnij tytuł i opis.'); if (!Number.isFinite(dto.latitude) || dto.latitude < -90 || dto.latitude > 90 || !Number.isFinite(dto.longitude) || dto.longitude < -180 || dto.longitude > 180) throw new Error('Nieprawidłowe współrzędne.'); validatePhotos(files); }
+                catch (err) { $('#postError').textContent = err.message; return; }
+                setBusy(form, true);
+                let saved = false, id = post?.id;
+                try {
+                    const result = await mutate(isEdit ? '/api/Posts/' + encodeURIComponent(id) : '/api/Posts', isEdit ? 'PUT' : 'POST', dto);
+                    saved = true;
+                    if (!isEdit) id = result?.id;
+                    if (!isEdit && !Number.isInteger(id)) throw new Error('Wpis został zapisany, ale API nie zwróciło jego identyfikatora. Odśwież listę przed dalszą edycją.');
+                    if (files.length) await uploadPhotos(id, files);
+                    setBusy(form, false); $('#modal').close(); toast(isEdit ? 'Zapisano zmiany.' : 'Dodano wpis.'); await loadPosts();
+                } catch (err) {
+                    if (saved) { setBusy(form, false); await loadPosts(); openDialog('<h2>Wpis zapisany</h2><p class="error" role="alert">' + escapeHtml(err.message) + '</p><p class="info">Nie twórz ponownie tego samego wpisu. Otwórz go z listy i użyj „Dodaj zdjęcia”, aby przesłać brakujące pliki.</p>'); }
+                    else { $('#postError').textContent = err.message; if (err.status === 401) { state.user = null; renderAccount(); } }
+                } finally { if (form.isConnected) setBusy(form, false); }
+            };
+        }
+        function photoDialog(id) {
+            openDialog('<h2>Dodaj zdjęcia</h2><form id="photoForm"><label>Wybierz zdjęcia · do 5 MB każde<input name="photos" type="file" accept="image/jpeg,image/png" multiple required></label><p class="error" id="photoError" role="alert"></p><button type="submit">Prześlij zdjęcia</button></form>');
+            $('#photoForm').onsubmit = async e => {
+                e.preventDefault(); const form = e.currentTarget, files = Array.from(form.elements.photos.files);
+                try { validatePhotos(files); } catch (err) { $('#photoError').textContent = err.message; return; }
+                setBusy(form, true);
+                try { await uploadPhotos(id, files); setBusy(form, false); await loadPosts(); await showPost(id); toast('Zdjęcia zapisano.'); }
+                catch (err) { $('#photoError').textContent = err.message + ' Wybierz ponownie tylko nieprzesłane zdjęcia.'; form.reset(); await loadPosts(); }
+                finally { if (form.isConnected) setBusy(form, false); }
+            };
+        }
+        function deleteDialog(post) {
+            openDialog('<h2>Usunąć wpis?</h2><p>Wpis „' + escapeHtml(post.title) + '” zostanie usunięty z bazy danych.</p><p class="error" id="deleteError" role="alert"></p><div class="actions"><button class="danger" id="confirmDelete">Usuń wpis</button><button class="outline" id="cancelDelete">Anuluj</button></div>');
+            $('#cancelDelete').onclick = () => showPost(post.id);
+            $('#confirmDelete').onclick = async () => {
+                $('#confirmDelete').disabled = true; $('#cancelDelete').disabled = true; $('#modal .close').disabled = true; $('#modal').dataset.busy = '1';
+                try { await mutate('/api/Posts/' + encodeURIComponent(post.id), 'DELETE'); $('#modal').dataset.busy = '0'; $('#modal').close(); await loadPosts(); toast('Wpis usunięty.'); }
+                catch (err) { $('#deleteError').textContent = err.message; }
+                finally { $('#modal').dataset.busy = '0'; if ($('#confirmDelete')) { $('#confirmDelete').disabled = false; $('#cancelDelete').disabled = false; $('#modal .close').disabled = false; } }
+            };
+        }
+        function init() {
+            $('#loginButton').onclick = () => authDialog(); $('#registerButton').onclick = () => authDialog(true); $('#logoutButton').onclick = logout;
+            $('#add').onclick = () => editor(); $('#refreshButton').onclick = $('#retryButton').onclick = loadPosts;
+            $('#search').oninput = e => { state.query = e.target.value; renderPosts(); };
+            $('#modal').addEventListener('cancel', e => { if ($('#modal').dataset.busy === '1') e.preventDefault(); });
+            if (location.protocol === 'file:') { $('#listStatus').textContent = 'Przenieś index.html do wwwroot i otwórz go przez HTTPS uruchomionej aplikacji w Visual Studio.'; return; }
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') toast('Do logowania wymagane jest HTTPS.');
+            checkSession().catch(err => toast(err.message)); loadPosts();
+        }
+        init();
+
+    </script>
+</body>
+</html>

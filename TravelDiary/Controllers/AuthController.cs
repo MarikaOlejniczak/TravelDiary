@@ -1,10 +1,11 @@
-﻿
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using TravelDiary.DTOs;
 using TravelDiary.Models;
 
@@ -15,10 +16,14 @@ namespace TravelDiary.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<ApplicationUser> userManager)
+        public AuthController(
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         // POST: api/Auth/register
@@ -74,7 +79,7 @@ namespace TravelDiary.Controllers
                 });
             }
 
-            // Dane użytkownika zapisane w tokenie
+            // Dane użytkownika zapisane w tokenie.
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -82,11 +87,26 @@ namespace TravelDiary.Controllers
                 new Claim(ClaimTypes.Email, user.Email ?? "")
             };
 
-            // Klucz JWT - na razie pozostawiamy
-            // zgodny z istniejącą konfiguracją
+            // Role użytkownika, w tym ewentualna rola Admin.
+            var roles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            // Ten sam klucz jest odczytywany w Program.cs.
+            var jwtKey = _configuration["Jwt:Key"];
+
+            if (string.IsNullOrWhiteSpace(jwtKey))
+            {
+                throw new InvalidOperationException(
+                    "Brakuje Jwt:Key w konfiguracji. " +
+                    "Ustaw klucz w User Secrets.");
+            }
+
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    "TravelDiarySuperSecretKey123456789"));
+                Encoding.UTF8.GetBytes(jwtKey));
 
             var credentials = new SigningCredentials(
                 key,
@@ -104,7 +124,7 @@ namespace TravelDiary.Controllers
             var tokenString = new JwtSecurityTokenHandler()
                 .WriteToken(token);
 
-            // NOWOŚĆ: zapisujemy JWT w ciasteczku HttpOnly
+            // Przeglądarka przechowuje JWT w ciasteczku HttpOnly.
             Response.Cookies.Append(
                 "TravelDiaryAuth",
                 tokenString,
@@ -117,8 +137,6 @@ namespace TravelDiary.Controllers
                     Path = "/"
                 });
 
-            // Zachowujemy token w odpowiedzi,
-            // żeby nie zepsuć dotychczasowych testów
             return Ok(new
             {
                 message = "Logowanie zakończone pomyślnie.",
@@ -129,21 +147,19 @@ namespace TravelDiary.Controllers
             });
         }
 
-
         // GET: api/Auth/me
-        [Microsoft.AspNetCore.Authorization.Authorize]
+        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
-            // Pobieramy identyfikator użytkownika z JWT
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized();
             }
 
-            // Szukamy użytkownika w bazie danych
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
@@ -151,22 +167,20 @@ namespace TravelDiary.Controllers
                 return Unauthorized();
             }
 
-            // Zwracamy dane użytkownika, ale nigdy hasło
             return Ok(new
             {
                 id = user.Id,
                 userName = user.UserName,
                 displayName = user.DisplayName,
-                email = user.Email
+                email = user.Email,
+                isAdmin = User.IsInRole("Admin")
             });
         }
-
 
         // POST: api/Auth/logout
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            // Usuwamy ciasteczko z przeglądarki
             Response.Cookies.Delete(
                 "TravelDiaryAuth",
                 new CookieOptions
@@ -182,7 +196,5 @@ namespace TravelDiary.Controllers
                 message = "Wylogowano pomyślnie."
             });
         }
-
-
     }
 }
