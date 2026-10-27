@@ -19,7 +19,7 @@ namespace TravelDiary.Filters
         {
             var request = context.HttpContext.Request;
 
-            // Żądania odczytujące dane nie wymagają CSRF.
+            // Żądania, które nie zmieniają danych.
             if (HttpMethods.IsGet(request.Method) ||
                 HttpMethods.IsHead(request.Method) ||
                 HttpMethods.IsOptions(request.Method) ||
@@ -28,26 +28,8 @@ namespace TravelDiary.Filters
                 return;
             }
 
-            // Nagłówek Bearer ma pierwszeństwo przed ciasteczkiem.
-            // Samodzielne uwierzytelnianie Bearer nie wymaga CSRF.
-            var authorization =
-                request.Headers.Authorization.ToString();
-
-            if (authorization.StartsWith(
-                "Bearer ",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
-            // Jeżeli przeglądarka nie wysyła ciasteczka
-            // uwierzytelniającego, nie ma sesji cookie do ochrony.
-            if (!request.Cookies.ContainsKey("TravelDiaryAuth"))
-            {
-                return;
-            }
-
-            // Sprawdzamy token CSRF dla żądań z ciasteczkiem.
+            // Wymagamy tokenu CSRF dla wszystkich
+            // pozostałych żądań API.
             try
             {
                 await _antiforgery.ValidateRequestAsync(

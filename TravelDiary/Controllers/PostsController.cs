@@ -9,6 +9,7 @@ using TravelDiary.Models;
 namespace TravelDiary.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class PostsController : ControllerBase
     {

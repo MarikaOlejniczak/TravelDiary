@@ -5,11 +5,16 @@ using TravelDiary.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TravelDiary.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Kontrolery API
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidateCsrfFilter>();
+});
+
 
 builder.Services.AddAntiforgery(options =>
 {

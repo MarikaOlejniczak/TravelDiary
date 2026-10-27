@@ -1,8 +1,25 @@
 <html lang="pl">
 <head>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Travel Diary — dziennik podróży</title>
+
+
+
+
+    <!-- Leaflet - wygląd mapy -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoYk5e1bK9C+8="
+          crossorigin="" />
+
+    <!-- Leaflet - obsługa interaktywnej mapy -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin="">
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap');
 
@@ -1073,10 +1090,98 @@
                 height: 180px
             }
         }
+
+
+        /* Poprawne wyświetlanie kafelków mapy Leaflet */
+        #map .leaflet-tile {
+            max-width: none !important;
+            max-height: none !important;
+        }
+
+        #map .leaflet-container img {
+            box-shadow: none;
+        }
+
+        .leaflet-container:before {
+            display: none !important;
+        }
     </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+
 </head>
 <body>
-    <header><div class="brand"><span>↗</span>travel diary.</div><div class="headerAccount"><small id="accountName">Sprawdzanie sesji…</small><button id="loginButton" class="outline" type="button">Zaloguj się</button><button id="registerButton" type="button">Załóż konto</button><button id="logoutButton" class="outline" type="button" hidden="">Wyloguj się</button></div></header><main class="workspace"><aside><div class="sidehead"><span class="eyebrow">TWÓJ DZIENNIK PODRÓŻY</span><h2>Miejsca i wspomnienia</h2><p class="muted">Prawdziwe wpisy, zdjęcia i historie z drogi.</p><button type="button" id="add">＋ Dodaj wpis</button></div><div class="tools"><input id="search" placeholder="Szukaj wpisu lub autora…" aria-label="Szukaj wpisów"></div><div class="listToolbar"><span id="entryCount">Wpisy z bazy danych</span><button id="refreshButton" class="outline" type="button">Odśwież</button></div><p id="listStatus" class="status" role="status" aria-live="polite">Przenieś index.html do wwwroot i otwórz go przez HTTPS uruchomionej aplikacji w Visual Studio.</p><button id="retryButton" class="outline" type="button" hidden="">Spróbuj ponownie</button><div class="grid" id="cards"></div></aside><section class="maparea" aria-label="Miejsce na Google Maps"><div class="maptop"><div><span class="eyebrow">ŚWIAT TWOICH PODRÓŻY</span><h1>Twoje podróże w jednym miejscu.</h1></div><span class="previewbadge">◌ Mapa w przygotowaniu</span></div><div id="map"><svg viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M 60 0 L 0 0 0 60" fill="none" stroke="#cbd5c6" stroke-width=".6"></path></pattern></defs><rect width="1000" height="800" fill="#e6ebde"></rect><path d="M-40 110Q180 260 300 120T670 80L1060 210V-10H-40Z M800 350Q700 530 860 840H1100V300Z" fill="#d1dfc5"></path><path d="M-40 620Q130 500 230 610T520 650T740 540T1080 590" stroke="#c0dce0" stroke-width="70" fill="none"></path><g fill="none" stroke="#fafbf6" stroke-width="15"><path d="M-30 160L290 410L580 340L1060 70"></path><path d="M140 -40L290 410L440 850"></path><path d="M-50 760L290 410L770 600L1000 790"></path><path d="M560 -40L580 340L770 600L890 850"></path></g><g fill="none" stroke="#d7c9a9" stroke-width="3"><path d="M-30 160L290 410L580 340L1060 70"></path><path d="M140 -40L290 410L440 850"></path><path d="M-50 760L290 410L770 600L1000 790"></path></g><rect width="1000" height="800" fill="url(#grid)" opacity=".35"></rect><path d="M240 480Q280 380 410 400T620 260" stroke="#356c50" stroke-width="5" stroke-dasharray="9 8" fill="none"></path><g stroke="white" stroke-width="6" fill="#28513d"><circle cx="240" cy="480" r="16"></circle><circle cx="410" cy="400" r="16"></circle><circle cx="620" cy="260" r="16"></circle></g></svg><div class="mapplaceholder"><span class="mapicon">⌖</span><span class="eyebrow">TU ZACZYNA SIĘ PODRÓŻ</span><h2>Miejsce na Google Maps</h2><p>Duża, centralna mapa Twoich wyjazdów.<br>Docelowo: start, trasa i przystanki ze zdjęciami.</p><div class="pills"><span>⌂ Miejsce startu</span><span>↝ Trasa</span><span>⌖ Przystanki</span></div><small>Ilustracja układu — Google Maps API nie jest jeszcze podłączone.</small></div><div class="maplegend"><span class="dot"></span> Schemat poglądowy — bez rzeczywistych tras</div></div><div class="mapbottom"><div><b>Twoje wspomnienia, w jednym miejscu</b><p>Wpisy i zdjęcia są pobierane z Twojej aplikacji. Trasy wymagają rozbudowy backendu.</p></div><span>MAPA · GŁÓWNY WIDOK</span></div></section></main><dialog id="modal" aria-label="Okno Travel Diary"></dialog><div id="toast" role="status" aria-live="polite" hidden=""></div>
+
+    <header>
+        <div class="brand"><span>↗</span>travel diary.</div>
+
+        <div class="headerAccount">
+            <small id="accountName">Sprawdzanie sesji…</small>
+            <button id="loginButton" class="outline" type="button">Zaloguj się</button>
+            <button id="registerButton" type="button">Załóż konto</button>
+            <button id="logoutButton" class="outline" type="button" hidden>Wyloguj się</button>
+        </div>
+    </header>
+
+    <main class="workspace">
+        <aside>
+            <div class="sidehead">
+                <span class="eyebrow">TWÓJ DZIENNIK PODRÓŻY</span>
+                <h2>Miejsca i wspomnienia</h2>
+                <p class="muted">Prawdziwe wpisy, zdjęcia i historie z drogi.</p>
+                <button type="button" id="add">＋ Dodaj wpis</button>
+            </div>
+
+            <div class="tools">
+                <input id="search"
+                       placeholder="Szukaj wpisu lub autora…"
+                       aria-label="Szukaj wpisów">
+            </div>
+
+            <div class="listToolbar">
+                <span id="entryCount">Wpisy z bazy danych</span>
+                <button id="refreshButton" class="outline" type="button">Odśwież</button>
+            </div>
+
+            <p id="listStatus" class="status" role="status" aria-live="polite">
+                Przenieś index.html do wwwroot i otwórz go przez HTTPS uruchomionej aplikacji w Visual Studio.
+            </p>
+
+            <button id="retryButton" class="outline" type="button" hidden>
+                Spróbuj ponownie
+            </button>
+
+            <div class="grid" id="cards"></div>
+        </aside>
+
+        <section class="maparea" aria-label="Mapa podróży">
+            <div class="maptop">
+                <div>
+                    <span class="eyebrow">ŚWIAT TWOICH PODRÓŻY</span>
+                    <h1>Twoje podróże w jednym miejscu.</h1>
+                </div>
+
+                <span class="previewbadge">◌ Mapa podróży</span>
+            </div>
+
+            <!-- Tutaj Leaflet wyświetli prawdziwą mapę -->
+            <div id="map"></div>
+
+            <div class="mapbottom">
+                <div>
+                    <b>Twoje wspomnienia, w jednym miejscu</b>
+                    <p>Wpisy i zdjęcia są pobierane z Twojej aplikacji. Trasy wymagają rozbudowy backendu.</p>
+                </div>
+
+                <span>MAPA · GŁÓWNY WIDOK</span>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="modal" aria-label="Okno Travel Diary"></dialog>
+
+    <div id="toast" role="status" aria-live="polite" hidden></div>
+
     <script>
         'use strict';
         // Ten plik używa wyłącznie API aplikacji na tym samym adresie (bez danych demo).
@@ -1158,7 +1263,16 @@
             try {
                 const result = await api('/api/Posts');
                 if (!Array.isArray(result)) throw new Error('API nie zwróciło listy wpisów. Otwórz stronę przez adres HTTPS aplikacji, a nie bezpośrednio z dysku.');
-                state.posts = result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); renderPosts(); $('#listStatus').textContent = '';
+
+                state.posts = result.sort((a, b) =>
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+
+                renderPosts();
+                renderMapMarkers();
+
+                $('#listStatus').textContent = '';
+
             } catch (e) { $('#listStatus').textContent = e.message; $('#retryButton').hidden = false; }
         }
         function authDialog(register = false) {
@@ -1179,7 +1293,12 @@
                     else {
                         const loggedIn = await checkSession();
                         if (!loggedIn) throw new Error('Logowanie przyjęte, ale nie udało się odczytać sesji. Uruchom aplikację przez HTTPS i sprawdź obsługę ciasteczek.');
-                        setBusy(form, false); $('#modal').close(); renderPosts(); toast('Zalogowano pomyślnie.');
+
+                        setBusy(form, false);
+                        $('#modal').close();
+                        await loadPosts();
+                        toast('Zalogowano pomyślnie.');
+
                     }
                 } catch (err) { $('#authError').textContent = err.message; }
                 finally { if (form.isConnected) { setBusy(form, false); const sw = $('#switchAuth'); if (sw) sw.disabled = false; } }
@@ -1187,9 +1306,24 @@
         }
         async function logout() {
             $('#logoutButton').disabled = true;
-            try { await mutate('/api/Auth/logout', 'POST'); state.user = null; renderAccount(); renderPosts(); toast('Wylogowano.'); }
-            catch (e) { toast(e.message); }
-            finally { $('#logoutButton').disabled = false; }
+
+            try {
+                await mutate('/api/Auth/logout', 'POST');
+
+                state.user = null;
+                state.posts = [];
+                renderAccount();
+                renderPosts();
+                renderMapMarkers();
+
+                toast('Wylogowano.');
+            }
+            catch (e) {
+                toast(e.message);
+            }
+            finally {
+                $('#logoutButton').disabled = false;
+            }
         }
         async function showPost(id) {
             try {
@@ -1211,30 +1345,258 @@
                 catch (e) { throw new Error('Zapisano ' + uploaded + ' z ' + files.length + ' zdjęć. ' + e.message); }
             }
         }
+
         function editor(post = null) {
-            if (!state.user) { authDialog(); return; }
+            if (!state.user) {
+                authDialog();
+                return;
+            }
+
             const isEdit = !!post;
-            openDialog('<h2>' + (isEdit ? 'Edytuj wspomnienie' : 'Nowe wspomnienie') + '</h2><form id="postForm"><label>Tytuł<input name="title" required maxlength="150" value="' + escapeHtml(post?.title || '') + '" placeholder="Jak zapamiętasz to miejsce?"></label><label>Opis<textarea name="content" required>' + escapeHtml(post?.content || '') + '</textarea></label><div class="row"><label>Szerokość geograficzna<input name="latitude" type="number" step="any" min="-90" max="90" required value="' + escapeHtml(post?.latitude ?? '') + '" placeholder="np. 52.4064"></label><label>Długość geograficzna<input name="longitude" type="number" step="any" min="-180" max="180" required value="' + escapeHtml(post?.longitude ?? '') + '" placeholder="np. 16.9252"></label></div><p class="info">Na razie wpisz współrzędne ręcznie. Wybieranie miejsca na mapie dołączymy po podłączeniu Google Maps.</p><label>Zdjęcia · JPG/PNG, do 5 MB każde<input name="photos" type="file" accept="image/jpeg,image/png" multiple></label><p class="error" id="postError" role="alert"></p><button type="submit">' + (isEdit ? 'Zapisz zmiany' : 'Dodaj wpis') + '</button></form>');
-            $('#postForm').onsubmit = async e => {
-                e.preventDefault(); const form = e.currentTarget, data = new FormData(form);
-                const files = Array.from(form.elements.photos.files);
-                const dto = { title: data.get('title').trim(), content: data.get('content').trim(), latitude: Number(data.get('latitude')), longitude: Number(data.get('longitude')) };
-                $('#postError').textContent = '';
-                try { if (!dto.title || !dto.content) throw new Error('Uzupełnij tytuł i opis.'); if (!Number.isFinite(dto.latitude) || dto.latitude < -90 || dto.latitude > 90 || !Number.isFinite(dto.longitude) || dto.longitude < -180 || dto.longitude > 180) throw new Error('Nieprawidłowe współrzędne.'); validatePhotos(files); }
-                catch (err) { $('#postError').textContent = err.message; return; }
-                setBusy(form, true);
-                let saved = false, id = post?.id;
+
+            openDialog(`
+        <h2>${isEdit ? 'Edytuj wspomnienie' : 'Nowe wspomnienie'}</h2>
+
+        <form id="postForm">
+            <label>
+                Tytuł
+                <input name="title" required maxlength="150"
+                    value="${escapeHtml(post?.title || '')}"
+                    placeholder="Jak zapamiętasz to miejsce?">
+            </label>
+
+            <label>
+                Opis
+                <textarea name="content" required>${escapeHtml(post?.content || '')}</textarea>
+            </label>
+
+            <label>
+                Wyszukaj miejsce podróży
+                <input id="placeSearch" type="text"
+                    placeholder="np. Pekin, Chiny">
+            </label>
+
+            <button type="button" id="searchPlace">
+                🔎 Szukaj miejsca
+            </button>
+
+            <p id="placeStatus" class="info" role="status"></p>
+            <div id="placeResults"></div>
+
+            <div class="row">
+                <label>
+                    Szerokość geograficzna
+                    <input name="latitude" type="number" step="any"
+                        min="-90" max="90" required
+                        value="${escapeHtml(post?.latitude ?? '')}">
+                </label>
+
+                <label>
+                    Długość geograficzna
+                    <input name="longitude" type="number" step="any"
+                        min="-180" max="180" required
+                        value="${escapeHtml(post?.longitude ?? '')}">
+                </label>
+            </div>
+
+            <p class="info">
+                Wyszukaj miejsce i wybierz wynik.
+                Współrzędne uzupełnią się automatycznie.
+                Możesz je też wpisać ręcznie.
+            </p>
+
+            <label>
+                Zdjęcia · JPG/PNG, do 5 MB każde
+                <input name="photos" type="file"
+                    accept="image/jpeg,image/png" multiple>
+            </label>
+
+            <p class="error" id="postError" role="alert"></p>
+
+            <button type="submit">
+                ${isEdit ? 'Zapisz zmiany' : 'Dodaj wpis'}
+            </button>
+        </form>
+    `);
+
+            // Wyszukiwanie miejsca przez OpenStreetMap Nominatim.
+            $('#searchPlace').onclick = async () => {
+                const query = $('#placeSearch').value.trim();
+                const status = $('#placeStatus');
+                const results = $('#placeResults');
+                const searchButton = $('#searchPlace');
+
+                results.replaceChildren();
+
+                if (query.length < 3) {
+                    status.textContent = 'Wpisz co najmniej 3 znaki.';
+                    return;
+                }
+
+                searchButton.disabled = true;
+                status.textContent = 'Szukam miejsca…';
+
                 try {
-                    const result = await mutate(isEdit ? '/api/Posts/' + encodeURIComponent(id) : '/api/Posts', isEdit ? 'PUT' : 'POST', dto);
+                    const url = new URL(
+                        'https://nominatim.openstreetmap.org/search'
+                    );
+
+                    url.searchParams.set('q', query);
+                    url.searchParams.set('format', 'jsonv2');
+                    url.searchParams.set('limit', '5');
+                    url.searchParams.set('accept-language', 'pl');
+
+                    const response = await fetch(url.toString());
+
+                    if (!response.ok) {
+                        throw new Error('Usługa wyszukiwania jest chwilowo niedostępna.');
+                    }
+
+                    const places = await response.json();
+
+                    if (!Array.isArray(places) || places.length === 0) {
+                        status.textContent = 'Nie znaleziono miejsca. Spróbuj dokładniejszej nazwy.';
+                        return;
+                    }
+
+                    status.textContent = 'Wybierz właściwe miejsce:';
+
+                    for (const place of places) {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'outline';
+                        button.style.display = 'block';
+                        button.style.marginBottom = '8px';
+
+                        // Bezpiecznie wstawiamy tekst, a nie HTML.
+                        button.textContent = '📍 ' + place.display_name;
+
+                        button.onclick = () => {
+                            const form = $('#postForm');
+
+                            form.elements.latitude.value = place.lat;
+                            form.elements.longitude.value = place.lon;
+
+                            status.textContent = '✅ Wybrano: ' + place.display_name;
+                            results.replaceChildren();
+                        };
+
+                        results.appendChild(button);
+                    }
+                }
+                catch (err) {
+                    status.textContent = err.message || 'Nie udało się wyszukać miejsca.';
+                }
+                finally {
+                    if (searchButton.isConnected) {
+                        searchButton.disabled = false;
+                    }
+                }
+            };
+
+            // Dotychczasowy zapis wpisu — pozostaje bez zmian.
+            $('#postForm').onsubmit = async e => {
+                e.preventDefault();
+
+                const form = e.currentTarget;
+                const data = new FormData(form);
+                const files = Array.from(form.elements.photos.files);
+
+                const dto = {
+                    title: data.get('title').trim(),
+                    content: data.get('content').trim(),
+                    latitude: Number(data.get('latitude')),
+                    longitude: Number(data.get('longitude'))
+                };
+
+                $('#postError').textContent = '';
+
+                try {
+                    if (!dto.title || !dto.content) {
+                        throw new Error('Uzupełnij tytuł i opis.');
+                    }
+
+                    if (
+                        !Number.isFinite(dto.latitude) ||
+                        dto.latitude < -90 ||
+                        dto.latitude > 90 ||
+                        !Number.isFinite(dto.longitude) ||
+                        dto.longitude < -180 ||
+                        dto.longitude > 180
+                    ) {
+                        throw new Error('Nieprawidłowe współrzędne.');
+                    }
+
+                    validatePhotos(files);
+                }
+                catch (err) {
+                    $('#postError').textContent = err.message;
+                    return;
+                }
+
+                setBusy(form, true);
+
+                let saved = false;
+                let id = post?.id;
+
+                try {
+                    const result = await mutate(
+                        isEdit
+                            ? '/api/Posts/' + encodeURIComponent(id)
+                            : '/api/Posts',
+                        isEdit ? 'PUT' : 'POST',
+                        dto
+                    );
+
                     saved = true;
+
                     if (!isEdit) id = result?.id;
-                    if (!isEdit && !Number.isInteger(id)) throw new Error('Wpis został zapisany, ale API nie zwróciło jego identyfikatora. Odśwież listę przed dalszą edycją.');
-                    if (files.length) await uploadPhotos(id, files);
-                    setBusy(form, false); $('#modal').close(); toast(isEdit ? 'Zapisano zmiany.' : 'Dodano wpis.'); await loadPosts();
-                } catch (err) {
-                    if (saved) { setBusy(form, false); await loadPosts(); openDialog('<h2>Wpis zapisany</h2><p class="error" role="alert">' + escapeHtml(err.message) + '</p><p class="info">Nie twórz ponownie tego samego wpisu. Otwórz go z listy i użyj „Dodaj zdjęcia”, aby przesłać brakujące pliki.</p>'); }
-                    else { $('#postError').textContent = err.message; if (err.status === 401) { state.user = null; renderAccount(); } }
-                } finally { if (form.isConnected) setBusy(form, false); }
+
+                    if (!isEdit && !Number.isInteger(id)) {
+                        throw new Error(
+                            'Wpis został zapisany, ale API nie zwróciło jego identyfikatora. Odśwież listę przed dalszą edycją.'
+                        );
+                    }
+
+                    if (files.length) {
+                        await uploadPhotos(id, files);
+                    }
+
+                    setBusy(form, false);
+                    $('#modal').close();
+
+                    toast(isEdit ? 'Zapisano zmiany.' : 'Dodano wpis.');
+                    await loadPosts();
+                }
+                catch (err) {
+                    if (saved) {
+                        setBusy(form, false);
+                        await loadPosts();
+
+                        openDialog(
+                            '<h2>Wpis zapisany</h2>' +
+                            '<p class="error" role="alert">' +
+                            escapeHtml(err.message) +
+                            '</p><p class="info">' +
+                            'Nie twórz ponownie tego samego wpisu. ' +
+                            'Otwórz go z listy i użyj „Dodaj zdjęcia”, ' +
+                            'aby przesłać brakujące pliki.</p>'
+                        );
+                    }
+                    else {
+                        $('#postError').textContent = err.message;
+
+                        if (err.status === 401) {
+                            state.user = null;
+                            renderAccount();
+                        }
+                    }
+                }
+                finally {
+                    if (form.isConnected) {
+                        setBusy(form, false);
+                    }
+                }
             };
         }
         function photoDialog(id) {
@@ -1268,6 +1630,66 @@
             checkSession().catch(err => toast(err.message)); loadPosts();
         }
         init();
+
+
+
+        const travelMap = L.map('map').setView([51.9194, 19.1451], 6);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(travelMap);
+
+
+
+        const postMarkers = L.layerGroup().addTo(travelMap);
+
+        function renderMapMarkers() {
+            // Usuwamy stare pinezki.
+            postMarkers.clearLayers();
+
+            // Niezalogowany użytkownik nie widzi pinezek.
+            if (!state.user) return;
+
+            // Tworzymy pinezki dla postów z poprawnymi współrzędnymi.
+            for (const post of state.posts) {
+                const lat = Number(post.latitude);
+                const lng = Number(post.longitude);
+
+                if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                    continue;
+                }
+
+                if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+                    continue;
+                }
+
+
+                const marker = L.marker([lat, lng]).addTo(postMarkers);
+
+                const popup = document.createElement('div');
+
+                const title = document.createElement('strong');
+                title.textContent = post.title || 'Wspomnienie z podróży';
+
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = 'Zobacz wpis';
+                button.style.marginTop = '8px';
+                button.style.display = 'block';
+
+                button.addEventListener('click', () => {
+                    travelMap.closePopup();
+                    showPost(post.id);
+                });
+
+                popup.append(title, button);
+
+                marker.bindPopup(popup);
+
+            }
+        }
+
 
     </script>
 </body>
