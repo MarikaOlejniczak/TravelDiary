@@ -1,0 +1,507 @@
+﻿
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7faf9">
+
+    <title>Społeczność | TravelDiary</title>
+    <link rel="stylesheet" href="/friends.css">
+</head>
+<body>
+
+    <div class="app-shell">
+
+        <aside class="sidebar">
+            <a class="brand" href="/">
+                <span class="brand-mark">✈</span>
+                <span>Travel<span class="brand-accent">Diary</span></span>
+            </a>
+
+            <div class="nav-caption">TWOJA PRZESTRZEŃ</div>
+
+            <nav class="side-nav" aria-label="Nawigacja główna">
+                <a href="/">
+                    <span>◈</span> Mapa podróży
+                </a>
+                <a href="/friends.html" class="active" aria-current="page">
+                    <span>♧</span> Społeczność
+                </a>
+                <a href="/profile.html">
+                    <span>◉</span> Mój profil
+                </a>
+            </nav>
+
+            <div class="sidebar-note">
+                <div class="note-icon">🌍</div>
+                <strong>Odkrywaj razem</strong>
+                <p>Najpiękniejsze wspomnienia powstają w dobrym towarzystwie.</p>
+            </div>
+
+            <div class="sidebar-footer">TRAVELDIARY · YOUR WORLD</div>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="topbar">
+                <div class="breadcrumb">
+                    TravelDiary <span>/</span> Społeczność
+                </div>
+                <a class="topbar-link" href="/">← Wróć do mapy</a>
+            </header>
+
+            <div class="page-content">
+
+                <section class="hero">
+                    <div class="hero-copy">
+                        <span class="eyebrow">
+                            <span class="eyebrow-dot"></span>
+                            TWOJA SPOŁECZNOŚĆ
+                        </span>
+
+                        <h1>
+                            Świat jest lepszy<br>
+                            <em>razem.</em>
+                        </h1>
+
+                        <p>
+                            Poznawaj podróżników, buduj znajomości
+                            i odkrywaj świat w dobrym towarzystwie.
+                        </p>
+
+                        <button id="heroExploreButton"
+                                class="hero-button"
+                                type="button">
+                            Odkrywaj podróżników <span>↗</span>
+                        </button>
+                    </div>
+
+                    <div class="hero-art" aria-hidden="true">
+                        <div class="art-sun"></div>
+                        <div class="art-orbit orbit-one"></div>
+                        <div class="art-orbit orbit-two"></div>
+                        <div class="art-globe">✈</div>
+                        <span class="art-label label-one">EXPLORE</span>
+                        <span class="art-label label-two">CONNECT</span>
+                        <span class="art-sparkle sparkle-one">✳</span>
+                        <span class="art-sparkle sparkle-two">✦</span>
+                    </div>
+                </section>
+
+                <section class="community-heading">
+                    <div>
+                        <span class="section-kicker">PEOPLE & PLACES</span>
+                        <h2>Twoi podróżnicy<span class="heading-dot">.</span></h2>
+                        <p>Zarządzaj znajomościami i poznawaj nowe osoby.</p>
+                    </div>
+                    <div class="community-mark">✳</div>
+                </section>
+
+                <div class="tabs" role="tablist" aria-label="Sekcje społeczności">
+                    <button class="tab active"
+                            id="tab-friends"
+                            type="button"
+                            role="tab"
+                            aria-selected="true"
+                            aria-controls="panel-friends"
+                            data-tab="friends">
+                        Moi znajomi
+                        <span class="tab-count" id="friendsCount">0</span>
+                    </button>
+
+                    <button class="tab"
+                            id="tab-discover"
+                            type="button"
+                            role="tab"
+                            aria-selected="false"
+                            aria-controls="panel-discover"
+                            data-tab="discover">
+                        Odkrywaj ludzi
+                    </button>
+
+                    <button class="tab"
+                            id="tab-requests"
+                            type="button"
+                            role="tab"
+                            aria-selected="false"
+                            aria-controls="panel-requests"
+                            data-tab="requests">
+                        Zaproszenia
+                        <span class="tab-count coral" id="requestsCount">0</span>
+                    </button>
+                </div>
+
+                <!-- MOI ZNAJOMI -->
+                <section class="tab-panel"
+                         id="panel-friends"
+                         role="tabpanel"
+                         aria-labelledby="tab-friends">
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Twoje znajomości</h3>
+                            <p>Osoby, z którymi dzielisz pasję do podróży.</p>
+                        </div>
+                        <button class="outline-button" id="findFriendsButton" type="button">
+                            + Znajdź podróżników
+                        </button>
+                    </div>
+
+                    <p id="friendsStatus" class="status-text">
+                        Ładowanie znajomych...
+                    </p>
+                    <div id="friendsList" class="people-grid"></div>
+                </section>
+
+                <!-- ODKRYWAJ -->
+                <section class="tab-panel"
+                         id="panel-discover"
+                         role="tabpanel"
+                         aria-labelledby="tab-discover"
+                         hidden>
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Poznaj kogoś nowego</h3>
+                            <p>Każda wielka podróż zaczyna się od spotkania.</p>
+                        </div>
+                    </div>
+
+                    <div class="search-panel">
+                        <label for="userSearch">WYSZUKAJ PODRÓŻNIKA</label>
+                        <div class="search-row">
+                            <input id="userSearch"
+                                   type="search"
+                                   placeholder="Wpisz nazwę użytkownika..."
+                                   maxlength="50"
+                                   autocomplete="off">
+                            <button id="searchButton" type="button">
+                                Szukaj ↗
+                            </button>
+                        </div>
+                    </div>
+
+                    <p id="searchStatus" class="status-text">
+                        Wpisz co najmniej 2 znaki, aby znaleźć podróżników.
+                    </p>
+                    <div id="searchResults" class="people-grid"></div>
+                </section>
+
+                <!-- ZAPROSZENIA -->
+                <section class="tab-panel"
+                         id="panel-requests"
+                         role="tabpanel"
+                         aria-labelledby="tab-requests"
+                         hidden>
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Nowe znajomości</h3>
+                            <p>Tutaj znajdziesz zaproszenia od innych podróżników.</p>
+                        </div>
+                    </div>
+
+                    <p id="requestsStatus" class="status-text">
+                        Ładowanie zaproszeń...
+                    </p>
+                    <div id="requestsList" class="people-grid"></div>
+                </section>
+
+                <footer class="page-footer">
+                    <span>✈ TravelDiary</span>
+                    <span>Collect moments, not things.</span>
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function getJson(path) {
+            const response = await fetch(path, {
+                credentials: "same-origin",
+                cache: "no-store"
+            });
+
+            if (!response.ok) {
+                throw new Error("Błąd HTTP " + response.status);
+            }
+
+            return response.json();
+        }
+
+        // ZAKŁADKI
+        function openTab(tabName) {
+            const buttons = document.querySelectorAll("[data-tab]");
+            const panels = document.querySelectorAll(".tab-panel");
+
+            for (const button of buttons) {
+                const selected = button.dataset.tab === tabName;
+
+                button.classList.toggle("active", selected);
+                button.setAttribute("aria-selected", String(selected));
+                button.tabIndex = selected ? 0 : -1;
+            }
+
+            for (const panel of panels) {
+                panel.hidden = panel.id !== "panel-" + tabName;
+            }
+
+            if (tabName === "discover") {
+                document.getElementById("userSearch").focus();
+            }
+        }
+
+        document.querySelectorAll("[data-tab]").forEach(button => {
+            button.addEventListener("click", () => {
+                openTab(button.dataset.tab);
+            });
+
+            button.addEventListener("keydown", event => {
+                if (event.key !== "ArrowLeft" &&
+                    event.key !== "ArrowRight") {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const tabs = [...document.querySelectorAll("[data-tab]")];
+                const index = tabs.indexOf(button);
+                const direction = event.key === "ArrowRight" ? 1 : -1;
+                const next = tabs[(index + direction + tabs.length) % tabs.length];
+
+                openTab(next.dataset.tab);
+                next.focus();
+            });
+        });
+
+        document.getElementById("heroExploreButton")
+            .addEventListener("click", () => openTab("discover"));
+
+        document.getElementById("findFriendsButton")
+            .addEventListener("click", () => openTab("discover"));
+
+        function createAvatar(displayName) {
+            const avatar = document.createElement("div");
+            avatar.className = "person-avatar";
+
+            const initials = (displayName || "?")
+                .trim()
+                .split(/\s+/)
+                .slice(0, 2)
+                .map(part => part.charAt(0).toUpperCase())
+                .join("");
+
+            avatar.textContent = initials || "?";
+
+            return avatar;
+        }
+
+        function createPersonCard(displayName, userName) {
+            const card = document.createElement("article");
+            card.className = "person-card";
+
+            const top = document.createElement("div");
+            top.className = "person-top";
+
+            const avatar = createAvatar(displayName);
+
+            const info = document.createElement("div");
+            info.className = "person-info";
+
+            const name = document.createElement("h4");
+            name.textContent = displayName || userName;
+
+            const username = document.createElement("p");
+            username.textContent = "@" + userName;
+
+            info.append(name, username);
+            top.append(avatar, info);
+
+            const actions = document.createElement("div");
+            actions.className = "person-actions";
+
+            card.append(top, actions);
+
+            return { card, actions };
+        }
+
+        function createProfileLink(userId) {
+            const link = document.createElement("a");
+            link.className = "profile-link";
+            link.href = "/profile.html?id=" + encodeURIComponent(userId);
+            link.textContent = "Zobacz profil ↗";
+            return link;
+        }
+
+        // MOI ZNAJOMI
+        async function loadFriends() {
+            const status = document.getElementById("friendsStatus");
+            const list = document.getElementById("friendsList");
+
+            try {
+                const friends = await getJson("/api/Friends");
+
+                list.replaceChildren();
+                document.getElementById("friendsCount").textContent = friends.length;
+
+                if (friends.length === 0) {
+                    status.textContent =
+                        "Nie masz jeszcze znajomych. Odkryj nowych podróżników! 🌍";
+                    status.hidden = false;
+                    return;
+                }
+
+                status.hidden = true;
+
+                for (const friend of friends) {
+                    const { card, actions } = createPersonCard(
+                        friend.displayName,
+                        friend.userName
+                    );
+
+                    const link = createProfileLink(friend.id);
+
+                    const removeButton = document.createElement("button");
+                    removeButton.type = "button";
+                    removeButton.className = "danger-button";
+                    removeButton.textContent = "Usuń znajomego";
+
+                    removeButton.addEventListener("click", async () => {
+                        if (!confirm(
+                            `Czy na pewno chcesz usunąć ${friend.displayName} ze znajomych?`
+                        )) {
+                            return;
+                        }
+
+                        removeButton.disabled = true;
+                        removeButton.textContent = "Usuwanie...";
+
+                        try {
+                            const csrfResponse = await fetch("/api/Csrf/token", {
+                                credentials: "same-origin",
+                                cache: "no-store"
+                            });
+
+                            if (!csrfResponse.ok) {
+                                throw new Error("Nie udało się pobrać tokenu CSRF.");
+                            }
+
+                            const csrf = await csrfResponse.json();
+
+                            const response = await fetch(
+                                "/api/Friends/" + encodeURIComponent(friend.id),
+                                {
+                                    method: "DELETE",
+                                    credentials: "same-origin",
+                                    headers: {
+                                        "X-CSRF-TOKEN": csrf.token
+                                    }
+                                }
+                            );
+
+                            const result = await response.json();
+
+                            if (!response.ok) {
+                                throw new Error(
+                                    result.message ||
+                                    "Nie udało się usunąć znajomego."
+                                );
+                            }
+
+                            alert(result.message);
+                            await loadFriends();
+
+                        } catch (error) {
+                            alert(error.message);
+                            console.error(error);
+
+                            removeButton.disabled = false;
+                            removeButton.textContent = "Usuń znajomego";
+                        }
+                    });
+
+                    actions.append(link, removeButton);
+                    list.appendChild(card);
+                }
+
+            } catch (error) {
+                status.textContent = "Nie udało się wczytać znajomych.";
+                status.hidden = false;
+                console.error(error);
+            }
+        }
+
+        // OTRZYMANE ZAPROSZENIA
+        async function loadRequests() {
+            const status = document.getElementById("requestsStatus");
+            const list = document.getElementById("requestsList");
+
+            try {
+                const requests = await getJson(
+                    "/api/Friends/requests/received"
+                );
+
+                list.replaceChildren();
+                document.getElementById("requestsCount").textContent =
+                    requests.length;
+
+                if (requests.length === 0) {
+                    status.textContent =
+                        "Nie masz nowych zaproszeń. Wszystko na bieżąco! 💚";
+                    status.hidden = false;
+                    return;
+                }
+
+                status.hidden = true;
+
+                for (const request of requests) {
+                    const { card, actions } = createPersonCard(
+                        request.senderDisplayName,
+                        request.senderUserName
+                    );
+
+                    const link = createProfileLink(request.senderId);
+
+                    const acceptButton = document.createElement("button");
+                    acceptButton.type = "button";
+                    acceptButton.className = "primary-button";
+                    acceptButton.textContent = "✓ Akceptuj";
+                    acceptButton.dataset.acceptRequest = request.id;
+
+                    acceptButton.addEventListener("click", () => {
+                        acceptFriendRequest(request.id);
+                    });
+
+                    const rejectButton = document.createElement("button");
+                    rejectButton.type = "button";
+                    rejectButton.className = "danger-button";
+                    rejectButton.textContent = "✕ Odrzuć";
+                    rejectButton.dataset.rejectRequest = request.id;
+
+                    rejectButton.addEventListener("click", () => {
+                        rejectFriendRequest(request.id);
+                    });
+
+                    actions.append(link, acceptButton, rejectButton);
+                    list.appendChild(card);
+                }
+
+            } catch (error) {
+                status.textContent = "Nie udało się wczytać zaproszeń.";
+                status.hidden = false;
+                console.error(error);
+            }
+        }
+
+        loadFriends();
+        loadRequests();
+    </script>
+
+    <!-- Skrypty są bezpośrednio w wwwroot -->
+    <script src="/friends-requests.js"></script>
+    <script src="/friends-search.js"></script>
+
+</body>
+</html>

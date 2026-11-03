@@ -34,6 +34,8 @@ namespace TravelDiary.Controllers
                     Longitude = post.Longitude,
                     CreatedAt = post.CreatedAt,
 
+                    AuthorId = post.UserId,
+
                     AuthorName = post.User != null
                         ? post.User.DisplayName
                         : "Nieznany użytkownik",
@@ -48,6 +50,42 @@ namespace TravelDiary.Controllers
             return Ok(posts);
         }
 
+
+        
+        // GET: api/Posts/user/{userId}
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<PostDto>>> GetUserPosts(
+            string userId)
+        {
+            var posts = await _context.Posts
+                .Where(post => post.UserId == userId)
+                .OrderByDescending(post => post.CreatedAt)
+                .Select(post => new PostDto
+                {
+                    Id = post.Id,
+                    Title = post.Title,
+                    Content = post.Content,
+                    Latitude = post.Latitude,
+                    Longitude = post.Longitude,
+                    CreatedAt = post.CreatedAt,
+
+                    AuthorId = post.UserId,
+
+                    AuthorName = post.User != null
+                        ? post.User.DisplayName
+                        : "Nieznany użytkownik",
+
+                    Images = post.Images
+                        .OrderBy(image => image.Id)
+                        .Select(image => image.ImageUrl)
+                        .ToList()
+                })
+                .ToListAsync();
+
+            return Ok(posts);
+        }
+
+
         // GET: api/Posts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PostDto>> GetPost(int id)
@@ -59,13 +97,17 @@ namespace TravelDiary.Controllers
                     Id = p.Id,
                     Title = p.Title,
                     Content = p.Content,
+
                     Latitude = p.Latitude,
                     Longitude = p.Longitude,
                     CreatedAt = p.CreatedAt,
 
+                    AuthorId = p.UserId,
+
                     AuthorName = p.User != null
-                        ? p.User.DisplayName
-                        : "Nieznany użytkownik",
+    ?               p.User.DisplayName
+    :                "Nieznany użytkownik",
+
 
                     Images = p.Images
                         .OrderBy(image => image.Id)

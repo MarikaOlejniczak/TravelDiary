@@ -1,0 +1,702 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #edf4f2;
+    --white: #fff;
+    --ink: #20383e;
+    --muted: #617b80;
+    --turquoise: #16b8b2;
+    --ocean: #087f85;
+    --coral: #ff806b;
+    --line: #dbe8e5;
+    --soft: #edf8f6;
+    --shadow: 0 8px 28px rgba(24,65,69,.07)
+}
+
+* {
+    box-sizing: border-box
+}
+
+html {
+    scroll-behavior: smooth
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans',sans-serif
+}
+
+button, input, textarea {
+    font: inherit
+}
+
+a {
+    color: inherit;
+    text-decoration: none
+}
+
+button {
+    cursor: pointer
+}
+
+[hidden] {
+    display: none !important
+}
+
+.app-shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0,1fr);
+    min-height: 100vh
+}
+
+.sidebar {
+    background: #fff;
+    border-right: 1px solid var(--line);
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Manrope,sans-serif;
+    font-weight: 800;
+    font-size: 23px;
+    letter-spacing: -.8px;
+    color: var(--ocean)
+}
+
+.nav-caption, .eyebrow {
+    font-size: 11px;
+    letter-spacing: 1.6px;
+    font-weight: 800;
+    color: var(--ocean)
+}
+
+.nav-caption {
+    margin: 24px 12px 0;
+    color: #91a8a6
+}
+
+.side-nav {
+    display: grid;
+    gap: 7px
+}
+
+    .side-nav a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 14px;
+        border-radius: 13px;
+        color: #526d70;
+        font-weight: 700
+    }
+
+        .side-nav a:hover, .side-nav a.active {
+            background: #e7f8f5;
+            color: var(--ocean)
+        }
+
+.sidebar-note {
+    margin-top: 16px;
+    padding: 20px;
+    border-radius: 18px;
+    background: linear-gradient(145deg,#ddf6ef,#f2fbf7)
+}
+
+    .sidebar-note span {
+        font-size: 25px;
+        display: block;
+        margin-bottom: 12px
+    }
+
+    .sidebar-note strong {
+        font-size: 13px
+    }
+
+    .sidebar-note p {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.6;
+        margin: 8px 0 0
+    }
+
+.sidebar-footer {
+    margin-top: auto;
+    color: #96a9a8;
+    font-size: 11px;
+    line-height: 1.6
+}
+
+.main-content {
+    min-width: 0
+}
+
+.topbar {
+    min-height: 75px;
+    padding: 20px clamp(24px,3vw,54px);
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    color: var(--muted);
+    font-size: 13px
+}
+
+    .topbar strong {
+        color: var(--ink)
+    }
+
+    .topbar a {
+        font-weight: 700;
+        color: var(--ocean)
+    }
+
+.page-content {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 35px clamp(24px,3vw,54px) 30px
+}
+
+.page-heading {
+    margin-bottom: 25px
+}
+
+    .page-heading h1 {
+        font-family: Manrope,sans-serif;
+        font-size: clamp(28px,3vw,39px);
+        letter-spacing: -1.5px;
+        margin: 8px 0
+    }
+
+        .page-heading h1 span {
+            font-size: .8em
+        }
+
+    .page-heading p, .section-heading p {
+        color: var(--muted);
+        margin: 0;
+        font-size: 14px
+    }
+
+.status, .posts-status {
+    color: var(--muted);
+    padding: 12px 0
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    padding: 32px;
+    border: 1px solid #d2eee6;
+    border-radius: 24px;
+    background: linear-gradient(120deg,#dff7f0 0%,#effbf8 60%,#fff 100%);
+    box-shadow: var(--shadow);
+    margin-bottom: 22px
+}
+
+.avatar {
+    width: 108px;
+    height: 108px;
+    flex: 0 0 108px;
+    border-radius: 30px;
+    background: linear-gradient(135deg,var(--turquoise),var(--ocean));
+    color: #fff;
+    font: 800 46px Manrope,sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 25px #087f8529
+}
+
+.profile-info {
+    min-width: 0;
+    flex: 1
+}
+
+    .profile-info h2 {
+        font: 800 clamp(23px,2.6vw,34px) Manrope,sans-serif;
+        letter-spacing: -1px;
+        margin: 6px 0 2px;
+        overflow-wrap: anywhere
+    }
+
+.username {
+    color: var(--ocean);
+    font-weight: 700;
+    margin: 0 0 12px
+}
+
+.bio {
+    line-height: 1.7;
+    margin: 0 0 9px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere
+}
+
+.joined {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 0
+}
+
+.button {
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 17px;
+    font-weight: 700;
+    white-space: nowrap
+}
+
+.button-outline {
+    border: 1px solid #b8e4df;
+    background: #fff;
+    color: var(--ocean)
+}
+
+.button-primary {
+    background: var(--ocean);
+    color: #fff
+}
+
+.button-ghost {
+    background: var(--soft);
+    color: var(--ocean)
+}
+
+.button:disabled {
+    opacity: .6;
+    cursor: wait
+}
+
+.panel {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 26px;
+    box-shadow: var(--shadow);
+    margin-bottom: 22px;
+    min-width: 0
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px
+}
+
+    .section-heading h2 {
+        font: 800 clamp(20px,2vw,26px) Manrope,sans-serif;
+        letter-spacing: -.6px;
+        margin: 6px 0 6px
+    }
+
+.section-counter {
+    flex: 0 0 auto;
+    background: #e9f9f5;
+    border: 1px solid #d1eee7;
+    border-radius: 100px;
+    padding: 9px 14px;
+    color: var(--ocean);
+    font-weight: 800;
+    font-size: 12px
+}
+
+#profileMap {
+    height: clamp(320px,40vw,490px);
+    width: 100%;
+    border-radius: 16px;
+    z-index: 0;
+    background: #e7f2f0
+}
+
+.map-hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 13px 0 0
+}
+
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 18px
+}
+
+.post-card {
+    border: 1px solid var(--line);
+    border-radius: 17px;
+    overflow: hidden;
+    background: #fff;
+    min-width: 0;
+    transition: transform .2s,box-shadow .2s
+}
+
+    .post-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 26px #183f4512
+    }
+
+.post-media {
+    height: 190px;
+    overflow: hidden;
+    background: #dff5ee
+}
+
+    .post-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block
+    }
+
+.post-media-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    background: linear-gradient(130deg,#d4f6ed,#e4f3f8)
+}
+
+.post-body {
+    padding: 18px
+}
+
+.post-date {
+    color: var(--ocean);
+    font-size: 11px;
+    font-weight: 800;
+    margin: 0 0 8px
+}
+
+.post-body h3 {
+    font: 800 17px Manrope,sans-serif;
+    margin: 0 0 10px;
+    overflow-wrap: anywhere
+}
+
+.post-description {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: pre-line;
+    min-height: 42px
+}
+
+.post-link {
+    display: inline-block;
+    margin-top: 7px;
+    font-weight: 800;
+    font-size: 12px;
+    color: var(--ocean)
+}
+
+.edit-panel form {
+    max-width: 650px;
+    display: grid;
+    gap: 11px
+}
+
+.edit-panel label {
+    font-weight: 700;
+    font-size: 13px
+}
+
+.edit-panel input, .edit-panel textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #cbdedb;
+    border-radius: 11px;
+    outline: none;
+    background: #fcfefd;
+    color: var(--ink)
+}
+
+    .edit-panel input:focus, .edit-panel textarea:focus {
+        border-color: var(--turquoise);
+        box-shadow: 0 0 0 3px #16b8b220
+    }
+
+.edit-panel .button {
+    justify-self: start
+}
+
+.edit-panel #saveStatus {
+    color: var(--ocean);
+    margin: 0
+}
+
+.page-footer {
+    text-align: center;
+    color: #8ba4a2;
+    font-size: 12px;
+    padding: 10px 0 20px
+}
+
+@media(max-width:1150px) {
+    .app-shell {
+        grid-template-columns: 195px minmax(0,1fr)
+    }
+
+    .sidebar {
+        padding: 25px 14px
+    }
+
+    .posts-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr))
+    }
+
+    .profile-card {
+        padding: 25px
+    }
+}
+
+@media(max-width:760px) {
+    .app-shell {
+        display: block
+    }
+
+    .sidebar {
+        padding: 14px 17px;
+        gap: 10px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line)
+    }
+
+    .brand {
+        font-size: 20px
+    }
+
+    .nav-caption, .sidebar-note, .sidebar-footer {
+        display: none
+    }
+
+    .side-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px
+    }
+
+        .side-nav a {
+            font-size: 12px;
+            padding: 9px 11px
+        }
+
+    .topbar {
+        min-height: 55px;
+        padding: 14px 18px
+    }
+
+    .page-content {
+        padding: 23px 17px
+    }
+
+    .profile-card {
+        flex-wrap: wrap;
+        gap: 17px;
+        padding: 20px
+    }
+
+    .avatar {
+        width: 75px;
+        height: 75px;
+        flex-basis: 75px;
+        border-radius: 21px;
+        font-size: 34px
+    }
+
+    .profile-info {
+        flex-basis: calc(100% - 95px)
+    }
+
+    .profile-card > .button {
+        width: 100%
+    }
+
+    .panel {
+        padding: 18px;
+        border-radius: 17px
+    }
+
+    .section-heading {
+        align-items: flex-start
+    }
+
+    .posts-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+        gap: 11px
+    }
+
+    .post-media {
+        height: 135px
+    }
+
+    .post-body {
+        padding: 12px
+    }
+
+        .post-body h3 {
+            font-size: 14px
+        }
+
+    #profileMap {
+        height: 350px
+    }
+}
+
+@media(max-width:480px) {
+    .posts-grid {
+        grid-template-columns: 1fr
+    }
+
+    .post-media {
+        height: 210px
+    }
+
+    .section-counter {
+        font-size: 10px;
+        padding: 7px 9px
+    }
+
+    .topbar {
+        font-size: 11px
+    }
+}
+
+/* TravelDiary — naprawa mapy profilu */
+
+.leaflet-container {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+    .leaflet-container img {
+        max-width: none !important;
+    }
+
+    .leaflet-container .leaflet-tile {
+        max-width: none !important;
+        max-height: none !important;
+    }
+
+#profileMap {
+    width: 100%;
+    height: 420px;
+    min-height: 420px;
+    overflow: hidden;
+    border-radius: 18px;
+}
+
+/* ===== LEAFLET — NAPRAWA ROZJECHANYCH KAFLI ===== */
+
+#profileMap {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    min-height: 420px;
+    overflow: hidden;
+    border-radius: 18px;
+    isolation: isolate;
+}
+
+    #profileMap.leaflet-container {
+        overflow: hidden;
+    }
+
+    /* Obrazki Leaflet nie mogą dziedziczyć ograniczeń zdjęć */
+    #profileMap .leaflet-tile,
+    #profileMap .leaflet-marker-icon,
+    #profileMap .leaflet-marker-shadow {
+        max-width: none !important;
+        max-height: none !important;
+    }
+
+    /* Nie pozwalamy ogólnym stylom strony zmieniać rozmiaru kafelków */
+    #profileMap .leaflet-tile {
+        width: 256px;
+        height: 256px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        object-fit: fill;
+    }
+
+
+
+    /* ===== LEAFLET — POZYCJONOWANIE MAPY ===== */
+
+    #profileMap .leaflet-pane,
+    #profileMap .leaflet-tile,
+    #profileMap .leaflet-marker-icon,
+    #profileMap .leaflet-marker-shadow {
+        position: absolute;
+    }
+
+    #profileMap .leaflet-tile {
+        width: 256px;
+        height: 256px;
+        max-width: none !important;
+        max-height: none !important;
+        object-fit: fill;
+    }
+
+    #profileMap .leaflet-map-pane,
+    #profileMap .leaflet-tile-pane,
+    #profileMap .leaflet-tile-container {
+        transform-origin: 0 0;
+    }
+
+
+    /* ===== LEAFLET — OKIENKA PINEZEK ===== */
+
+    #profileMap .leaflet-popup {
+        position: absolute;
+        text-align: center;
+    }
+
+    #profileMap .leaflet-popup-content-wrapper {
+        background: #ffffff;
+        color: #20383e;
+        border-radius: 14px;
+        padding: 4px;
+        box-shadow: 0 8px 28px rgba(25, 60, 65, 0.18);
+    }
+
+    #profileMap .leaflet-popup-content {
+        margin: 12px 16px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+        #profileMap .leaflet-popup-content strong {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        #profileMap .leaflet-popup-content a {
+            color: #087f85;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+    #profileMap .leaflet-popup-tip {
+        background: #ffffff;
+    }

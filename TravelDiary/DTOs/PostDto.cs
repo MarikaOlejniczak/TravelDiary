@@ -15,6 +15,9 @@ namespace TravelDiary.DTOs
 
         public DateTime CreatedAt { get; set; }
 
+        // Identyfikator autora wpisu
+        public string AuthorId { get; set; } = string.Empty;
+
         public string AuthorName { get; set; } = string.Empty;
 
         // Lista adresów zdjęć przypisanych do wpisu

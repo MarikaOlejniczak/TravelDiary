@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil podróżnika — TravelDiary</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyo3Z3Rj7Lr0n7E=" crossorigin="">
+    <link rel="stylesheet" href="/profile.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+    <script src="/profile.js" defer></script>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="/">🌍 <span>TravelDiary</span></a>
+            <p class="nav-caption">ODKRYWAJ</p>
+            <nav class="side-nav" aria-label="Nawigacja główna">
+                <a href="/">🗺️ <span>Mapa podróży</span></a>
+                <a href="/friends.html">👥 <span>Znajomi</span></a>
+                <a href="/profile.html" class="active" aria-current="page">👤 <span>Mój profil</span></a>
+            </nav>
+            <div class="sidebar-note"><span>✈️</span><strong>Każda podróż to historia.</strong><p>Zbieraj wspomnienia na swojej mapie świata.</p></div>
+            <div class="sidebar-footer">TravelDiary · Twoja podróż, Twoja historia 💚</div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar"><span>Twoja przestrzeń / <strong>Profil podróżnika</strong></span><a href="/">← Wróć do mapy</a></header>
+            <div class="page-content">
+                <section class="page-heading"><span class="eyebrow">🌊 TRAVELDIARY COASTAL PREMIUM</span><h1>Profil podróżnika <span>✈️</span></h1><p>Poznaj historie i miejsca zapisane na mapie.</p></section>
+                <p id="status" class="status" role="status">Ładowanie profilu...</p>
+
+                <section id="profile" class="profile-card" hidden>
+                    <div class="avatar" id="avatar" aria-hidden="true">🌍</div>
+                    <div class="profile-info"><span class="eyebrow">PODRÓŻNIK TRAVELDIARY</span><h2 id="displayName"></h2><p class="username" id="userName"></p><p class="bio" id="bio"></p><p class="joined" id="joined"></p></div>
+                    <button id="editToggle" class="button button-outline" type="button" hidden>✏️ Edytuj profil</button>
+                </section>
+
+                <section id="editSection" class="panel edit-panel" hidden>
+                    <div class="section-heading"><div><span class="eyebrow">TWOJE DANE</span><h2>✏️ Edytuj profil</h2></div><button id="closeEdit" type="button" class="button button-ghost">Zamknij</button></div>
+                    <form id="editForm">
+                        <label for="editDisplayName">Nazwa wyświetlana</label>
+                        <input id="editDisplayName" type="text" minlength="2" maxlength="50" required>
+                        <label for="editBio">O mnie</label>
+                        <textarea id="editBio" maxlength="500" rows="4" placeholder="Opowiedz coś o swoich podróżach..."></textarea>
+                        <p id="saveStatus" role="status"></p>
+                        <button class="button button-primary" type="submit">💾 Zapisz zmiany</button>
+                    </form>
+                </section>
+
+                <section class="panel map-panel" aria-labelledby="mapHeading">
+                    <div class="section-heading"><div><span class="eyebrow">MIEJSCA I WSPOMNIENIA</span><h2 id="mapHeading">🌍 Mapa podróży</h2><p>Pinezki prowadzą do wspomnień tego podróżnika.</p></div><span class="section-counter" id="placesCount">0 miejsc</span></div>
+                    <div id="profileMap" role="region" aria-label="Interaktywna mapa podróży użytkownika"></div>
+                    <p class="map-hint" id="mapHint">Ładowanie miejsc...</p>
+                </section>
+
+                <section class="panel posts-panel" aria-labelledby="postsHeading">
+                    <div class="section-heading"><div><span class="eyebrow">PODRÓŻNICZY DZIENNIK</span><h2 id="postsHeading">📸 Historie z podróży</h2><p>Wspomnienia, zdjęcia i odwiedzone miejsca.</p></div><span class="section-counter" id="postsCount">0 wpisów</span></div>
+                    <p id="postsStatus" class="posts-status" role="status">Ładowanie wpisów...</p>
+                    <div id="postsGrid" class="posts-grid"></div>
+                </section>
+                <footer class="page-footer">Z miłości do podróży 🌊 · TravelDiary</footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
