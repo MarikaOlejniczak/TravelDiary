@@ -218,9 +218,31 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Pliki HTML, CSS, JS oraz zdjêcia
-app.UseDefaultFiles();
-app.UseStaticFiles();
+
+ // Blokujemy publiczny dostêp do starych adresów zdjêæ.
+ // Zdjêcia wpisów s¹ udostêpniane wy³¹cznie przez
+ // zabezpieczony endpoint /api/post-images/{id}.
+ app.Use(async (context, next) =>
+ {
+     var path = context.Request.Path;
+
+     if (path.StartsWithSegments(
+         "/uploads/posts",
+         StringComparison.OrdinalIgnoreCase))
+     {
+         context.Response.StatusCode =
+             StatusCodes.Status404NotFound;
+
+         return;
+     }
+
+     await next();
+ });
+
+ // Publiczne pliki strony: HTML, CSS i JavaScript.
+ app.UseDefaultFiles();
+ app.UseStaticFiles();
+
 
 // Sprawdzanie to¿samoœci u¿ytkownika
 app.UseAuthentication();

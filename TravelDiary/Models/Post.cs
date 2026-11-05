@@ -20,6 +20,14 @@ namespace TravelDiary.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        // Widoczność wpisu:
+        // Public - wszyscy
+        // Friends - zaakceptowani znajomi
+        // Private - tylko autor
+        [Required]
+        [MaxLength(20)]
+        public string Visibility { get; set; } = "Public";
+
         // Relacja z użytkownikiem
         public string? UserId { get; set; }
 

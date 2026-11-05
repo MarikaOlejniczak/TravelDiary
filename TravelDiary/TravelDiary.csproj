@@ -8,6 +8,44 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\uploads\posts_old_backup\**" />
+    <Content Remove="wwwroot\uploads\posts_old_backup\**" />
+    <EmbeddedResource Remove="wwwroot\uploads\posts_old_backup\**" />
+    <None Remove="wwwroot\uploads\posts_old_backup\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="PrivateUploads\posts\10f42df8828a432bad37a6f547d3b7e4.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PrivateUploads\posts\248e8fd29be34825a24d5f214cab592c.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PrivateUploads\posts\24a6520c2d3c4a28b323a7d92f6e09da.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PrivateUploads\posts\6a95136f09224fc3a587cb1529952738.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PrivateUploads\posts\7e237bfeffa8424fb9708af019fa893a.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PrivateUploads\posts\aa68fd530e1d46e58db49816e8011716.jpg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="PrivateUploads\posts\d9a925f64fb343cc8c730ec7b82374e5.jpeg">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.19" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.19" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.19" />
@@ -19,7 +57,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\uploads\posts\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
 </Project>

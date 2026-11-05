@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil podróżnika — TravelDiary</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyo3Z3Rj7Lr0n7E=" crossorigin="">
-    <link rel="stylesheet" href="/profile.css">
+    <link rel="stylesheet" href="/profile.css?v=2">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
     <script src="/profile.js" defer></script>
 </head>
@@ -62,5 +62,18 @@
             </div>
         </main>
     </div>
+
+    <dialog id="postDialog" aria-labelledby="postDialogTitle">
+        <div class="post-dialog-header">
+            <h2 id="postDialogTitle">Wspomnienie z podróży</h2>
+            <button type="button"
+                    id="closePostDialog"
+                    aria-label="Zamknij wspomnienie">
+                ✕
+            </button>
+        </div>
+
+        <div id="postDialogContent"></div>
+    </dialog>
 </body>
 </html>

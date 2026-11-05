@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 
 namespace TravelDiary.DTOs
 {
@@ -14,5 +15,12 @@ namespace TravelDiary.DTOs
         public double Latitude { get; set; }
 
         public double Longitude { get; set; }
+
+        // Widoczność nowego wpisu
+        [Required]
+        [RegularExpression(
+            "^(Public|Friends|Private)$",
+            ErrorMessage = "Nieprawidłowa widoczność wpisu.")]
+        public string Visibility { get; set; } = "Public";
     }
 }

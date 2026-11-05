@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -21,44 +21,38 @@ namespace TravelDiary.Controllers
         }
 
         // GET: api/Posts
+
         [HttpGet]
+
         public async Task<ActionResult<IEnumerable<PostDto>>> GetPosts()
         {
-            var posts = await _context.Posts
-                .Select(post => new PostDto
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Content = post.Content,
-                    Latitude = post.Latitude,
-                    Longitude = post.Longitude,
-                    CreatedAt = post.CreatedAt,
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                    AuthorId = post.UserId,
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
 
-                    AuthorName = post.User != null
-                        ? post.User.DisplayName
-                        : "Nieznany użytkownik",
-
-                    Images = post.Images
-                        .OrderBy(image => image.Id)
-                        .Select(image => image.ImageUrl)
-                        .ToList()
-                })
+            // Pobieramy identyfikatory zaakceptowanych znajomych.
+            // Znajomość działa niezależnie od kierunku zaproszenia.
+            var friendIds = await _context.FriendRequests
+                .Where(f =>
+                    f.Status == FriendRequestStatus.Accepted &&
+                    (f.SenderId == userId || f.ReceiverId == userId))
+                .Select(f =>
+                    f.SenderId == userId
+                        ? f.ReceiverId
+                        : f.SenderId)
                 .ToListAsync();
 
-            return Ok(posts);
-        }
-
-
-        
-        // GET: api/Posts/user/{userId}
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<PostDto>>> GetUserPosts(
-            string userId)
-        {
+            // Serwer filtruje wpisy przed wysłaniem ich do przeglądarki.
             var posts = await _context.Posts
-                .Where(post => post.UserId == userId)
+                .Where(post =>
+                    post.UserId == userId ||
+                    post.Visibility == "Public" ||
+                    (post.Visibility == "Friends" &&
+                     post.UserId != null &&
+                     friendIds.Contains(post.UserId)))
                 .OrderByDescending(post => post.CreatedAt)
                 .Select(post => new PostDto
                 {
@@ -69,15 +63,18 @@ namespace TravelDiary.Controllers
                     Longitude = post.Longitude,
                     CreatedAt = post.CreatedAt,
 
-                    AuthorId = post.UserId,
+                    AuthorId = post.UserId ?? string.Empty,
 
                     AuthorName = post.User != null
                         ? post.User.DisplayName
                         : "Nieznany użytkownik",
 
+                    Visibility = post.Visibility,
+
+                    // Zwracamy adresy zabezpieczonego API.
                     Images = post.Images
                         .OrderBy(image => image.Id)
-                        .Select(image => image.ImageUrl)
+                        .Select(image => "/api/post-images/" + image.Id)
                         .ToList()
                 })
                 .ToListAsync();
@@ -86,32 +83,131 @@ namespace TravelDiary.Controllers
         }
 
 
-        // GET: api/Posts/5
+
+
+
+        // GET: api/Posts/user/{userId}
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<PostDto>>> GetUserPosts(
+            string userId)
+        {
+            var currentUserId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Unauthorized();
+            }
+
+            // Pobieramy identyfikatory zaakceptowanych znajomych.
+            var friendIds = await _context.FriendRequests
+                .Where(f =>
+                    f.Status == FriendRequestStatus.Accepted &&
+                    (f.SenderId == currentUserId ||
+                     f.ReceiverId == currentUserId))
+                .Select(f =>
+                    f.SenderId == currentUserId
+                        ? f.ReceiverId
+                        : f.SenderId)
+                .ToListAsync();
+
+            // Pokazujemy tylko wpisy, do których użytkownik ma dostęp.
+            var posts = await _context.Posts
+                .Where(post =>
+                    post.UserId == userId &&
+                    (
+                        post.UserId == currentUserId ||
+                        post.Visibility == "Public" ||
+                        (post.Visibility == "Friends" &&
+                         post.UserId != null &&
+                         friendIds.Contains(post.UserId))
+                    ))
+                .OrderByDescending(post => post.CreatedAt)
+                .Select(post => new PostDto
+                {
+                    Id = post.Id,
+                    Title = post.Title,
+                    Content = post.Content,
+                    Latitude = post.Latitude,
+                    Longitude = post.Longitude,
+                    CreatedAt = post.CreatedAt,
+
+                    AuthorId = post.UserId ?? string.Empty,
+
+                    AuthorName = post.User != null
+                        ? post.User.DisplayName
+                        : "Nieznany użytkownik",
+
+                    Visibility = post.Visibility,
+
+                    // Zdjęcia pobieramy przez zabezpieczony kontroler.
+                    Images = post.Images
+                        .OrderBy(image => image.Id)
+                        .Select(image => "/api/post-images/" + image.Id)
+                        .ToList()
+                })
+                .ToListAsync();
+
+            return Ok(posts);
+        }
+
+
+
+
         [HttpGet("{id}")]
         public async Task<ActionResult<PostDto>> GetPost(int id)
         {
+            var currentUserId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Unauthorized();
+            }
+
+            // Najpierw sprawdzamy, czy użytkownik
+            // ma prawo zobaczyć ten wpis.
             var post = await _context.Posts
-                .Where(p => p.Id == id)
+                .Where(p =>
+                    p.Id == id &&
+                    (
+                        p.UserId == currentUserId ||
+                        p.Visibility == "Public" ||
+                        (
+                            p.Visibility == "Friends" &&
+                            p.UserId != null &&
+                            _context.FriendRequests.Any(f =>
+                                f.Status == FriendRequestStatus.Accepted &&
+                                (
+                                    (f.SenderId == currentUserId &&
+                                     f.ReceiverId == p.UserId)
+                                    ||
+                                    (f.ReceiverId == currentUserId &&
+                                     f.SenderId == p.UserId)
+                                ))
+                        )
+                    ))
                 .Select(p => new PostDto
                 {
                     Id = p.Id,
                     Title = p.Title,
                     Content = p.Content,
-
                     Latitude = p.Latitude,
                     Longitude = p.Longitude,
                     CreatedAt = p.CreatedAt,
 
-                    AuthorId = p.UserId,
+                    AuthorId = p.UserId ?? string.Empty,
 
                     AuthorName = p.User != null
-    ?               p.User.DisplayName
-    :                "Nieznany użytkownik",
+                        ? p.User.DisplayName
+                        : "Nieznany użytkownik",
 
+                    Visibility = p.Visibility,
 
+                    // Zwracamy adresy zabezpieczonego API.
                     Images = p.Images
                         .OrderBy(image => image.Id)
-                        .Select(image => image.ImageUrl)
+                        .Select(image => "/api/post-images/" + image.Id)
                         .ToList()
                 })
                 .FirstOrDefaultAsync();
@@ -124,7 +220,10 @@ namespace TravelDiary.Controllers
             return Ok(post);
         }
 
+
+
         // POST: api/Posts
+
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Post>> CreatePost(CreatePostDto dto)
@@ -144,7 +243,10 @@ namespace TravelDiary.Controllers
                 Latitude = dto.Latitude,
                 Longitude = dto.Longitude,
                 CreatedAt = DateTime.UtcNow,
-                UserId = userId
+                UserId = userId,
+
+                // Zapisujemy widoczność wybraną przez użytkownika.
+                Visibility = dto.Visibility
             };
 
             _context.Posts.Add(post);
@@ -156,7 +258,9 @@ namespace TravelDiary.Controllers
                 post);
         }
 
+
         // PUT: api/Posts/5
+
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePost(
@@ -194,6 +298,7 @@ namespace TravelDiary.Controllers
             return NoContent();
         }
 
+
         // DELETE: api/Posts/5
         [Authorize]
         [HttpDelete("{id}")]
@@ -227,6 +332,7 @@ namespace TravelDiary.Controllers
         }
 
         // POST: api/Posts/5/images
+
         [Authorize]
         [HttpPost("{id}/images")]
         [Consumes("multipart/form-data")]
@@ -262,12 +368,12 @@ namespace TravelDiary.Controllers
                 return BadRequest("Nie wybrano zdjęcia.");
             }
 
-            const long maxFileSize = 5 * 1024 * 1024;
+            const long maxFileSize = 20 * 1024 * 1024;
 
             if (file.Length > maxFileSize)
             {
                 return BadRequest(
-                    "Zdjęcie może mieć maksymalnie 5 MB.");
+                    "Zdjęcie może mieć maksymalnie 20 MB.");
             }
 
             var extension = Path.GetExtension(file.FileName)
@@ -275,10 +381,10 @@ namespace TravelDiary.Controllers
 
             var allowedExtensions = new[]
             {
-                ".jpg",
-                ".jpeg",
-                ".png"
-            };
+        ".jpg",
+        ".jpeg",
+        ".png"
+    };
 
             if (!allowedExtensions.Contains(extension))
             {
@@ -340,10 +446,10 @@ namespace TravelDiary.Controllers
                     "Zawartość pliku nie odpowiada formatowi zdjęcia.");
             }
 
+            // Nowe zdjęcia zapisujemy poza folderem wwwroot.
             var folderPath = Path.Combine(
                 Directory.GetCurrentDirectory(),
-                "wwwroot",
-                "uploads",
+                "PrivateUploads",
                 "posts");
 
             Directory.CreateDirectory(folderPath);
@@ -364,6 +470,7 @@ namespace TravelDiary.Controllers
 
             var image = new PostImage
             {
+                // Zachowujemy nazwę pliku w bazie danych.
                 ImageUrl = "/uploads/posts/" + fileName,
                 PostId = post.Id
             };
@@ -384,12 +491,14 @@ namespace TravelDiary.Controllers
                 throw;
             }
 
+            // Klient otrzymuje adres zabezpieczonego API.
             return Ok(new
             {
                 image.Id,
-                image.ImageUrl,
+                ImageUrl = "/api/post-images/" + image.Id,
                 image.PostId
             });
         }
+
     }
 }

@@ -227,8 +227,47 @@ function renderPosts(posts) {
 
         const link = document.createElement('a');
         link.className = 'post-link';
-        link.href = '/';
-        link.textContent = 'Otwórz mapę główną →';
+        link.href = `#post-${post.id}`;
+        link.textContent = '📖 Otwórz wspomnienie →';
+
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            const dialog = $('postDialog');
+            const dialogTitle = $('postDialogTitle');
+            const dialogContent = $('postDialogContent');
+
+            dialogTitle.textContent = post.title || 'Wspomnienie z podróży';
+            dialogContent.replaceChildren();
+
+            const description = document.createElement('p');
+            description.textContent = post.content || '';
+            dialogContent.append(description);
+
+            if (Array.isArray(post.images)) {
+                for (const imageUrl of post.images) {
+                    if (
+                        typeof imageUrl !== 'string' ||
+                        !/^\/api\/post-images\/\d+$/.test(imageUrl)
+                    ) {
+                        continue;
+                    }
+
+                    const image = document.createElement('img');
+                    image.src = imageUrl;
+                    image.alt = post.title || 'Zdjęcie z podróży';
+                    image.loading = 'lazy';
+                    image.style.maxWidth = '100%';
+                    image.style.height = 'auto';
+                    image.style.display = 'block';
+                    image.style.marginTop = '16px';
+
+                    dialogContent.append(image);
+                }
+            }
+
+            dialog.showModal();
+        });
 
         content.append(date, title, description, link);
         article.append(media, content);
@@ -372,6 +411,10 @@ $('editForm').addEventListener('submit', async (event) => {
     } finally {
         button.disabled = false;
     }
+});
+
+$('closePostDialog').addEventListener('click', () => {
+    $('postDialog').close();
 });
 
 initializeMap();

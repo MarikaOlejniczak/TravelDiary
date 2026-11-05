@@ -20,6 +20,9 @@ namespace TravelDiary.DTOs
 
         public string AuthorName { get; set; } = string.Empty;
 
+        // Widoczność wpisu: Public, Friends, Private
+        public string Visibility { get; set; } = "Public";
+
         // Lista adresów zdjęć przypisanych do wpisu
         public List<string> Images { get; set; } = new();
     }
