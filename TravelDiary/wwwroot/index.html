@@ -328,9 +328,9 @@
 
                         setBusy(form, false);
                         $('#modal').close();
+                        await loadFriendIds();
                         await loadPosts();
                         toast('Zalogowano pomyślnie.');
-
                     }
                 } catch (err) { $('#authError').textContent = err.message; }
                 finally { if (form.isConnected) { setBusy(form, false); const sw = $('#switchAuth'); if (sw) sw.disabled = false; } }
