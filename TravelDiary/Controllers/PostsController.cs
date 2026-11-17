@@ -71,13 +71,22 @@ namespace TravelDiary.Controllers
 
                     Visibility = post.Visibility,
 
+                    // Liczba polubień wpisu
+                    LikesCount = _context.PostLikes.Count(like =>
+                        like.PostId == post.Id),
+
+                    // Czy zalogowany użytkownik polubił wpis
+                    IsLikedByCurrentUser = _context.PostLikes.Any(like =>
+                        like.PostId == post.Id &&
+                        like.UserId == userId),
+
                     // Zwracamy adresy zabezpieczonego API.
                     Images = post.Images
-                        .OrderBy(image => image.Id)
-                        .Select(image => "/api/post-images/" + image.Id)
-                        .ToList()
+    .OrderBy(image => image.Id)
+    .Select(image => "/api/post-images/" + image.Id)
+    .ToList()
                 })
-                .ToListAsync();
+.ToListAsync();
 
             return Ok(posts);
         }
@@ -140,13 +149,22 @@ namespace TravelDiary.Controllers
 
                     Visibility = post.Visibility,
 
+                    // Liczba polubień wpisu
+                    LikesCount = _context.PostLikes.Count(like =>
+                        like.PostId == post.Id),
+
+                    // Czy zalogowany użytkownik polubił wpis
+                    IsLikedByCurrentUser = _context.PostLikes.Any(like =>
+                        like.PostId == post.Id &&
+                        like.UserId == currentUserId),
+
                     // Zdjęcia pobieramy przez zabezpieczony kontroler.
                     Images = post.Images
-                        .OrderBy(image => image.Id)
-                        .Select(image => "/api/post-images/" + image.Id)
-                        .ToList()
+    .OrderBy(image => image.Id)
+    .Select(image => "/api/post-images/" + image.Id)
+    .ToList()
                 })
-                .ToListAsync();
+.ToListAsync();
 
             return Ok(posts);
         }
@@ -204,13 +222,22 @@ namespace TravelDiary.Controllers
 
                     Visibility = p.Visibility,
 
+                    // Liczba polubień wpisu
+                    LikesCount = _context.PostLikes.Count(like =>
+                        like.PostId == p.Id),
+
+                    // Czy zalogowany użytkownik polubił wpis
+                    IsLikedByCurrentUser = _context.PostLikes.Any(like =>
+                        like.PostId == p.Id &&
+                        like.UserId == currentUserId),
+
                     // Zwracamy adresy zabezpieczonego API.
                     Images = p.Images
-                        .OrderBy(image => image.Id)
-                        .Select(image => "/api/post-images/" + image.Id)
-                        .ToList()
+    .OrderBy(image => image.Id)
+    .Select(image => "/api/post-images/" + image.Id)
+    .ToList()
                 })
-                .FirstOrDefaultAsync();
+.FirstOrDefaultAsync();
 
             if (post == null)
             {
@@ -292,6 +319,8 @@ namespace TravelDiary.Controllers
             post.Content = dto.Content;
             post.Latitude = dto.Latitude;
             post.Longitude = dto.Longitude;
+            post.Visibility = dto.Visibility;
+
 
             await _context.SaveChangesAsync();
 

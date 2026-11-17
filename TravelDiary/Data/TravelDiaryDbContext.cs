@@ -15,6 +15,7 @@ namespace TravelDiary.Data
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostImage> PostImages { get; set; }
+        public DbSet<PostLike> PostLikes { get; set; }
 
         // Zaproszenia i znajomości użytkowników.
         public DbSet<FriendRequest> FriendRequests { get; set; }
@@ -43,6 +44,25 @@ namespace TravelDiary.Data
             builder.Entity<FriendRequest>()
                 .HasIndex(f => new { f.SenderId, f.ReceiverId })
                 .IsUnique();
+
+            // Jeden użytkownik może polubić dany post tylko raz.
+            builder.Entity<PostLike>()
+                .HasIndex(like => new { like.PostId, like.UserId })
+                .IsUnique();
+
+            // Usunięcie posta usuwa również jego polubienia.
+            builder.Entity<PostLike>()
+                .HasOne(like => like.Post)
+                .WithMany()
+                .HasForeignKey(like => like.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Usunięcie użytkownika usuwa jego polubienia.
+            builder.Entity<PostLike>()
+                .HasOne(like => like.User)
+                .WithMany()
+                .HasForeignKey(like => like.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

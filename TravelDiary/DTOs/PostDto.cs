@@ -1,5 +1,4 @@
-﻿
-namespace TravelDiary.DTOs
+﻿namespace TravelDiary.DTOs
 {
     public class PostDto
     {
@@ -25,5 +24,11 @@ namespace TravelDiary.DTOs
 
         // Lista adresów zdjęć przypisanych do wpisu
         public List<string> Images { get; set; } = new();
+
+        // Liczba polubień wpisu
+        public int LikesCount { get; set; }
+
+        // Czy zalogowany użytkownik polubił ten wpis
+        public bool IsLikedByCurrentUser { get; set; }
     }
 }

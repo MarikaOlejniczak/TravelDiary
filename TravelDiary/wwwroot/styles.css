@@ -1108,3 +1108,40 @@
     .workspace.sidebar-hidden > aside {
         display: none;
     }
+
+#postFilters button.active {
+    background: #157b68 !important;
+    color: #ffffff !important;
+    border-color: #157b68 !important;
+    font-weight: 600;
+}
+
+
+    .postFilters button.active:hover {
+        background: #106554;
+        border-color: #106554;
+    }
+
+/* Nawigacja: Znajomi i Mój profil */
+#friendsLink,
+#profileLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 15px;
+    border-radius: 12px;
+    border: 1px solid #cbded8;
+    background: #ffffff;
+    color: #157b68;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+}
+
+    #friendsLink:hover,
+    #profileLink:hover {
+        background: #e7f5ef;
+        transform: translateY(-2px);
+    }
+

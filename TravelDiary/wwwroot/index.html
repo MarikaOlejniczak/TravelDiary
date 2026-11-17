@@ -18,11 +18,17 @@
 
 </head>
 <body>
-
+    
     <header>
         <div class="brand"><span>↗</span>travel diary.</div>
 
         <div class="headerAccount">
+            <a href="/friends.html" class="outline" id="friendsLink">
+                👥 Znajomi
+            </a>
+            <a href="/profile.html" class="outline" id="profileLink">
+                👥 Mój profil
+            </a>
             <small id="accountName">Sprawdzanie sesji…</small>
             <button id="loginButton" class="outline" type="button">Zaloguj się</button>
             <button id="registerButton" type="button">Załóż konto</button>
@@ -44,7 +50,23 @@
                        placeholder="Szukaj wpisu lub autora…"
                        aria-label="Szukaj wpisów">
             </div>
+            <div class="postFilters" id="postFilters">
+                <button type="button" class="outline" data-filter="all">
+                    Wszystkie
+                </button>
 
+                <button type="button" class="outline" data-filter="mine">
+                    📝 Moje posty
+                </button>
+
+                <button type="button" class="outline" data-filter="friends">
+                    👥 Znajomi
+                </button>
+
+                <button type="button" class="outline" data-filter="public">
+                    🌍 Publiczne
+                </button>
+            </div>
             <div class="listToolbar">
                 <span id="entryCount">Wpisy z bazy danych</span>
                 <button id="refreshButton" class="outline" type="button">Odśwież</button>
@@ -73,7 +95,6 @@
                     <h1>Twoje podróże w jednym miejscu.</h1>
                 </div>
 
-                <span class="previewbadge">◌ Mapa podróży</span>
             </div>
 
             <!-- Tutaj Leaflet wyświetli prawdziwą mapę -->
@@ -82,7 +103,7 @@
             <div class="mapbottom">
                 <div>
                     <b>Twoje wspomnienia, w jednym miejscu</b>
-                    <p>Wpisy i zdjęcia są pobierane z Twojej aplikacji. Trasy wymagają rozbudowy backendu.</p>
+                    <p>Wpisy i zdjęcia są pobierane z aplikacji.</p>
                 </div>
 
                 <span>MAPA · GŁÓWNY WIDOK</span>
@@ -98,7 +119,7 @@
         'use strict';
         // Ten plik używa wyłącznie API aplikacji na tym samym adresie (bez danych demo).
         const $ = s => document.querySelector(s);
-        const state = { user: null, posts: [], query: '' };
+        const state = { user: null, posts: [], query: '', postFilter: 'all', friendIds: new Set() };
         let toastTimer;
         class ApiError extends Error { constructor(message, status) { super(message); this.status = status; } }
         function escapeHtml(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
@@ -166,16 +187,51 @@
             try { state.user = await api('/api/Auth/me'); renderAccount(); return true; }
             catch (e) { state.user = null; renderAccount(); if (e.status !== 401) throw e; return false; }
         }
+        async function loadFriendIds() {
+            if (!state.user) {
+                state.friendIds.clear();
+                return;
+            }
 
+            const friends = await api('/api/Friends');
+
+            state.friendIds = new Set(
+                friends.map(friend => String(friend.id))
+            );
+        }
         function renderPosts() {
             const q = state.query.toLocaleLowerCase('pl');
 
-            const shown = state.posts.filter(p =>
-                [p.title, p.content, p.authorName]
+            const shown = state.posts.filter(p => {
+                const matchesSearch = [p.title, p.content, p.authorName]
                     .join(' ')
                     .toLocaleLowerCase('pl')
-                    .includes(q)
-            );
+                    .includes(q);
+
+                const isMine =
+                    state.user &&
+                    String(p.authorId) === String(state.user.id);
+
+                const isFriend =
+                    state.friendIds.has(String(p.authorId));
+
+                const matchesFilter =
+                    state.postFilter === 'all' ||
+
+                    (state.postFilter === 'mine' &&
+                        isMine) ||
+
+                    (state.postFilter === 'friends' &&
+                        !isMine &&
+                        isFriend) ||
+
+                    (state.postFilter === 'public' &&
+                        !isMine &&
+                        !isFriend &&
+                        p.visibility === 'Public');
+
+                return matchesSearch && matchesFilter;
+            });
 
             $('#entryCount').textContent = state.posts.length + ' wpisów w dzienniku';
 
@@ -219,6 +275,9 @@
                     '<span>↗</span>' +
                     '</div>' +
                     '<small>⌖ ' + escapeHtml(coordinates(p)) + '</small>' +
+                    '<div class="postLikesPreview">' +
+                    '❤️ ' + (Number(p.likesCount) || 0) +
+                    '</div>' +
                     '</div>';
 
                 // Kliknięcie posta otwiera podgląd.
@@ -321,44 +380,130 @@
 
                 const managementHtml = state.user
                     ? `
-                <p class="info">
-                    Zmiany są dostępne tylko dla autora.
-                    Uprawnienia sprawdza serwer.
-                </p>
-                <div class="actions">
-                    <button id="editPost">Edytuj</button>
-                    <button class="outline" id="photosPost">Dodaj zdjęcia</button>
-                    <button class="danger" id="deletePost">Usuń</button>
-                </div>
-              `
+                    <p class="info">
+                        Zmiany są dostępne tylko dla autora.
+                        Uprawnienia sprawdza serwer.
+                    </p>
+                    <div class="actions">
+                        <button id="editPost">Edytuj</button>
+                        <button class="outline" id="photosPost">Dodaj zdjęcia</button>
+                        <button class="danger" id="deletePost">Usuń</button>
+                    </div>
+                  `
                     : '<p class="info">Zaloguj się, aby zarządzać własnymi wpisami.</p>';
 
                 const html = `
-            <span class="eyebrow">WPIS Z PODRÓŻY</span>
+                <span class="eyebrow">WPIS Z PODRÓŻY</span>
 
-            <h2>${escapeHtml(p.title)}</h2>
+                <h2>${escapeHtml(p.title)}</h2>
 
-            <p class="info">
-                ${escapeHtml(p.authorName)} ·
-                ${escapeHtml(dateLabel(p.createdAt))}
-            </p>
+               <p class="info">
+    ${escapeHtml(p.authorName)} ·
+    ${escapeHtml(dateLabel(p.createdAt))}
+</p>
 
-            <div class="gallery">${galleryHtml}</div>
+<p class="info">
+    Widoczność:
+    ${p.visibility === 'Public'
+                        ? '🌍 Publiczny'
+                        : p.visibility === 'Friends'
+                            ? '👥 Dla znajomych'
+                            : p.visibility === 'Private'
+                                ? '🔒 Prywatny'
+                                : 'Nieznana'}
+</p>
 
-            <p class="postContent">${escapeHtml(p.content)}</p>
+<div class="gallery">${galleryHtml}</div>
 
-            <p class="info">⌖ ${escapeHtml(coordinates(p))}</p>
+                <p class="postContent">${escapeHtml(p.content)}</p>
+               <div class="postLikes">
+    <button type="button" id="likePost" class="outline"
+            ${!state.user ? 'disabled' : ''}
+            aria-pressed="${p.isLikedByCurrentUser ? 'true' : 'false'}">
+        ${p.isLikedByCurrentUser ? '❤️' : '🤍'}
+        Polub
+    </button>
 
-            <div class="actions">
-                <button class="outline" id="showPostOnMap" type="button">
-                    📍 Pokaż na mapie
-                </button>
-            </div>
+    <span>Liczba serduszek:</span>
 
-            ${managementHtml}
-        `;
+<button type="button" id="showLikes" class="outline">
+    ❤️ ${Number(p.likesCount) || 0}
+</button>
+</div>
+
+                <p class="info">⌖ ${escapeHtml(coordinates(p))}</p>
+
+                <div class="actions">
+                    <button class="outline" id="showPostOnMap" type="button">
+                        📍 Pokaż na mapie
+                    </button>
+                </div>
+
+                ${managementHtml}
+            `;
 
                 openDialog(html);
+                const showLikesButton = $('#showLikes');
+
+                if (showLikesButton) {
+                    showLikesButton.onclick = async () => {
+                        showLikesButton.disabled = true;
+
+                        try {
+                            const users = await api(
+                                '/api/PostLikes/' + encodeURIComponent(p.id) + '/users'
+                            );
+
+                            if (!Array.isArray(users)) {
+                                throw new Error('Nie udało się pobrać listy polubień.');
+                            }
+
+                            const usersHtml = users.length
+                                ? users.map(user =>
+                                    '<p>👤 ' + escapeHtml(user.displayName || user.userName || 'Użytkownik') + '</p>'
+                                ).join('')
+                                : '<p class="info">Nikt jeszcze nie polubił tego wpisu.</p>';
+
+                            openDialog(
+                                '<h2>❤️ Polubienia</h2>' +
+                                usersHtml +
+                                '<button type="button" id="backToPost" class="outline">' +
+                                '← Wróć do wpisu</button>'
+                            );
+
+                            $('#backToPost').onclick = () => showPost(p.id);
+
+                        } catch (err) {
+                            toast(err.message);
+                        } finally {
+                            if (showLikesButton.isConnected) {
+                                showLikesButton.disabled = false;
+                            }
+                        }
+                    };
+                }
+                const likeButton = $('#likePost');
+
+                if (likeButton && state.user) {
+                    likeButton.onclick = async () => {
+                        likeButton.disabled = true;
+
+                        try {
+                            const method = p.isLikedByCurrentUser ? 'DELETE' : 'POST';
+
+                            await mutate('/api/PostLikes/' + encodeURIComponent(p.id), method);
+
+                            await loadPosts();
+                            await showPost(p.id);
+
+                        } catch (err) {
+                            toast(err.message);
+                            if (likeButton.isConnected) {
+                                likeButton.disabled = false;
+                            }
+                        }
+                    };
+                }
 
                 // Nowy przycisk — przenosi mapę do wpisu.
                 $('#showPostOnMap').onclick = () => {
@@ -424,79 +569,83 @@
             const isEdit = !!post;
 
             openDialog(`
-        <h2>${isEdit ? 'Edytuj wspomnienie' : 'Nowe wspomnienie'}</h2>
+            <h2>${isEdit ? 'Edytuj wspomnienie' : 'Nowe wspomnienie'}</h2>
 
-        <form id="postForm">
-            <label>
-                Tytuł
-                <input name="title" required maxlength="150"
-                    value="${escapeHtml(post?.title || '')}"
-                    placeholder="Jak zapamiętasz to miejsce?">
-            </label>
-
-            <label>
-                Opis
-                <textarea name="content" required>${escapeHtml(post?.content || '')}</textarea>
-            </label>
-
-            <label>
-                Wyszukaj miejsce podróży
-                <input id="placeSearch" type="text"
-                    placeholder="np. Pekin, Chiny">
-            </label>
-
-            <button type="button" id="searchPlace">
-                🔎 Szukaj miejsca
-            </button>
-
-            <p id="placeStatus" class="info" role="status"></p>
-            <div id="placeResults"></div>
-
-            <div class="row">
+            <form id="postForm">
                 <label>
-                    Szerokość geograficzna
-                    <input name="latitude" type="number" step="any"
-                        min="-90" max="90" required
-                        value="${escapeHtml(post?.latitude ?? '')}">
+                    Tytuł
+                    <input name="title" required maxlength="150"
+                        value="${escapeHtml(post?.title || '')}"
+                        placeholder="Jak zapamiętasz to miejsce?">
                 </label>
 
                 <label>
-                    Długość geograficzna
-                    <input name="longitude" type="number" step="any"
-                        min="-180" max="180" required
-                        value="${escapeHtml(post?.longitude ?? '')}">
+                    Opis
+                    <textarea name="content" required>${escapeHtml(post?.content || '')}</textarea>
                 </label>
-            </div>
 
-            <p class="info">
-                Wyszukaj miejsce i wybierz wynik.
-                Współrzędne uzupełnią się automatycznie.
-                Możesz je też wpisać ręcznie.
-            </p>
-            ${!isEdit ? `
-    <label>
-        Widoczność wpisu
-        <select name="visibility" required>
-            <option value="Public">🌍 Publiczny</option>
-            <option value="Friends">👥 Znajomi</option>
-            <option value="Private">🔒 Prywatny</option>
-        </select>
-    </label>
-` : ''}
+                <label>
+                    Wyszukaj miejsce podróży
+                    <input id="placeSearch" type="text"
+                        placeholder="np. Pekin, Chiny">
+                </label>
 
-            <label>
-                Zdjęcia · JPG/PNG, do 20 MB każde
-                <input name="photos" type="file"
-                    accept="image/jpeg,image/png" multiple>
-            </label>
+                <button type="button" id="searchPlace">
+                    🔎 Szukaj miejsca
+                </button>
 
-            <p class="error" id="postError" role="alert"></p>
+                <p id="placeStatus" class="info" role="status"></p>
+                <div id="placeResults"></div>
 
-            <button type="submit">
-                ${isEdit ? 'Zapisz zmiany' : 'Dodaj wpis'}
-            </button>
-        </form>
-    `);
+                <div class="row">
+                    <label>
+                        Szerokość geograficzna
+                        <input name="latitude" type="number" step="any"
+                            min="-90" max="90" required
+                            value="${escapeHtml(post?.latitude ?? '')}">
+                    </label>
+
+                    <label>
+                        Długość geograficzna
+                        <input name="longitude" type="number" step="any"
+                            min="-180" max="180" required
+                            value="${escapeHtml(post?.longitude ?? '')}">
+                    </label>
+                </div>
+
+                <p class="info">
+                    Wyszukaj miejsce i wybierz wynik.
+                    Współrzędne uzupełnią się automatycznie.
+                    Możesz je też wpisać ręcznie.
+                </p>
+                    <label>
+                    Widoczność wpisu
+                    <select name="visibility" required>
+                        <option value="Public" ${post?.visibility === 'Public' ? 'selected' : ''}>
+                            🌍 Publiczny
+                        </option>
+                        <option value="Friends" ${post?.visibility === 'Friends' ? 'selected' : ''}>
+                            👥 Znajomi
+                        </option>
+                        <option value="Private" ${post?.visibility === 'Private' ? 'selected' : ''}>
+                            🔒 Prywatny
+                        </option>
+                    </select>
+                </label>
+
+                <label>
+                    Zdjęcia · JPG/PNG, do 20 MB każde
+                    <input name="photos" type="file"
+                        accept="image/jpeg,image/png" multiple>
+                </label>
+
+                <p class="error" id="postError" role="alert"></p>
+
+                <button type="submit">
+                    ${isEdit ? 'Zapisz zmiany' : 'Dodaj wpis'}
+                </button>
+            </form>
+        `);
 
             // Wyszukiwanie miejsca przez OpenStreetMap Nominatim.
             $('#searchPlace').onclick = async () => {
@@ -588,9 +737,7 @@
                     longitude: Number(data.get('longitude'))
                 };
 
-                if (!isEdit) {
-                    dto.visibility = data.get('visibility');
-                }
+                dto.visibility = data.get('visibility');
 
                 $('#postError').textContent = '';
 
@@ -734,10 +881,37 @@
             $('#loginButton').onclick = () => authDialog(); $('#registerButton').onclick = () => authDialog(true); $('#logoutButton').onclick = logout;
             $('#add').onclick = () => editor(); $('#refreshButton').onclick = $('#retryButton').onclick = loadPosts;
             $('#search').oninput = e => { state.query = e.target.value; renderPosts(); };
+            const filterButtons = document.querySelectorAll('#postFilters button');
+
+            filterButtons.forEach(button => {
+                button.classList.toggle(
+                    'active',
+                    button.dataset.filter === state.postFilter
+                );
+
+                button.onclick = () => {
+                    state.postFilter = button.dataset.filter;
+
+                    filterButtons.forEach(btn => {
+                        btn.classList.toggle(
+                            'active',
+                            btn.dataset.filter === state.postFilter
+                        );
+                    });
+
+                    renderPosts();
+                    renderMapMarkers();
+                };
+            });
             $('#modal').addEventListener('cancel', e => { if ($('#modal').dataset.busy === '1') e.preventDefault(); });
             if (location.protocol === 'file:') { $('#listStatus').textContent = 'Przenieś index.html do wwwroot i otwórz go przez HTTPS uruchomionej aplikacji w Visual Studio.'; return; }
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') toast('Do logowania wymagane jest HTTPS.');
-            checkSession().catch(err => toast(err.message)); loadPosts();
+            checkSession()
+                .then(async () => {
+                    await loadFriendIds();
+                    await loadPosts();
+                })
+                .catch(err => toast(err.message));
         }
         init();
 
@@ -785,17 +959,17 @@
         });
 
         function focusPostOnMap(post) {
-    console.log('POST DO MAPY:', post);
+            console.log('POST DO MAPY:', post);
 
-    const lat = Number(post.latitude);
-    const lng = Number(post.longitude);
+            const lat = Number(post.latitude);
+            const lng = Number(post.longitude);
 
-    console.log('WSPÓŁRZĘDNE:', lat, lng);
+            console.log('WSPÓŁRZĘDNE:', lat, lng);
 
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-        alert('Ten post nie ma poprawnych współrzędnych.');
-        return;
-    }
+            if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+                alert('Ten post nie ma poprawnych współrzędnych.');
+                return;
+            }
 
             travelMap.flyTo([lat, lng], 12, {
                 animate: true,
@@ -812,7 +986,7 @@
                 selectedMarker.setIcon(selectedMarkerIcon);
                 selectedMarker.openPopup();
             }
-    }
+        }
         function renderMapMarkers() {
             // Usuwamy stare pinezki.
             postMarkers.clearLayers();
@@ -823,7 +997,30 @@
 
             // Tworzymy pinezki dla postów z poprawnymi współrzędnymi.
             for (const post of state.posts) {
+
+                const isMine =
+                    state.user &&
+                    String(post.authorId) === String(state.user.id);
+
+                const isFriend =
+                    state.friendIds.has(String(post.authorId));
+
+                if (state.postFilter === 'mine' && !isMine) {
+                    continue;
+                }
+
+                if (state.postFilter === 'friends' &&
+                    (isMine || !isFriend)) {
+                    continue;
+                }
+
+                if (state.postFilter === 'public' &&
+                    (isMine || isFriend || post.visibility !== 'Public')) {
+                    continue;
+                }
+
                 const lat = Number(post.latitude);
+
                 const lng = Number(post.longitude);
 
                 if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
